@@ -10,8 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_20_060424) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_22_202028) do
   create_table "maps", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "provinces", force: :cascade do |t|
+    t.string "name"
+    t.string "color"
+    t.string "geometry"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

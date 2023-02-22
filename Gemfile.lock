@@ -166,6 +166,9 @@ GEM
     reline (0.3.2)
       io-console (~> 0.5)
     rexml (3.2.5)
+    rgeo (3.0.0)
+    rgeo-geojson (2.1.1)
+      rgeo (>= 1.0.0)
     rubyzip (2.3.2)
     selenium-webdriver (4.8.1)
       rexml (~> 3.2, >= 3.2.5)
@@ -218,6 +221,8 @@ DEPENDENCIES
   puma (~> 5.0)
   rails (~> 7.0.4)
   redis (~> 4.0)
+  rgeo
+  rgeo-geojson
   selenium-webdriver
   sprockets-rails
   sqlite3 (~> 1.4)

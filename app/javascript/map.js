@@ -1,9 +1,10 @@
 $(document).ready(function() {
+  // Map settings
   let map = L.map('map', {
     minZoom: 4,
     maxZoom: 7
   }).setView([43, 16], 4);
-
+  // Different map styles
   var Stamen_Watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     subdomains: 'abcd',
@@ -27,11 +28,23 @@ $(document).ready(function() {
     minZoom: 4,
     maxZoom: 7,
   });
-
+  // Assign style to the map
   Esri_WorldImagery.addTo(map);
-
+  // Map bounds
   map.setMaxBounds(map.getBounds());
-
+  // Function to generate a unique color to each feature of a GeoJSON file
+  function getColor(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var color = Math.abs(hash % 16777216).toString(16);
+    while (color.length < 6) {
+      color = "0" + color;
+    }
+    return "#" + color;
+  }
+  // Color map
   $.ajax({
     url: "https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson",
     dataType: "json",
