@@ -38,22 +38,52 @@ $(document).ready(function() {
 
   // Function to get the color from the Ruby object
   var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
-  function getColor(name) {
+  function getProvinceColor(name) {
     return provinces.find(province => province.name === name).color;
   }
-
+  // Function to get the name from the Ruby object
+  function getProvinceName(name) {
+    if (name === 'I') {
+      return 'Roma';
+    } else if (name === 'IX') {
+      return 'Genua';
+    } else if (name === 'XI') {
+      return 'Mediolanum';
+    } else if (name === 'X') {
+      return 'Aquileia';
+    } else if (name === 'VIII') {
+      return 'Ravenna';
+    } else if (name === 'VII') {
+      return 'Arretium';
+    } else if (name === 'VI') {
+      return 'Ariminium';
+    } else if (name === 'V') {
+      return 'Ancona';
+    } else if (name === 'IV') {
+      return 'Umbria'; //Interamna or Via Flaminia
+    } else if (name === 'II') {
+      return 'Brundinium';
+    } else if (name === 'III') {
+      return 'Rhegium';
+    } else {
+      return provinces.find(province => province.name === name).name;
+    }
+  }
+  // province = provinces.find(province => province.name === 'I');
+  // province.name = 'Roma';
+  // console.log(provinces)
   // Map
   $.ajax({
-    url: "https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson",
+    url: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
     dataType: "json",
     success: function(data) {
       L.geoJSON(data, {
         style: function(feature) {
-          return { color: getColor(feature.properties.name) };
+          return { color: getProvinceColor(feature.properties.name) };
         },
         onEachFeature: function(feature, layer) {
           if (feature.properties && feature.properties.name) {
-            var labelContent = '<div class="label">' + feature.properties.name + '</div>';
+            var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
             var offsets = {
               'Lusitania': {
                 4: [-10, -10],
@@ -228,6 +258,24 @@ $(document).ready(function() {
                 5: [0, -30],
                 6: [0, -60],
                 7: [0, -120]
+              },
+              'Mediolanum': {
+                4: [-5, -5],
+                5: [-10, -10],
+                6: [-20, -20],
+                7: [-40, -40]
+              },
+              'Ariminium': {
+                4: [0, -10],
+                5: [0, -20],
+                6: [0, -40],
+                7: [0, -80]
+              },
+              'Arretium': {
+                4: [-10, 0],
+                5: [-20, 0],
+                6: [-40, 0],
+                7: [-80, 0]
               }
             };
             var label = L.marker(layer.getBounds().getCenter(), {
@@ -237,9 +285,9 @@ $(document).ready(function() {
                 iconSize: null
               })
             }).addTo(map);
-            setLabelPosition(label, layer.getBounds().getCenter(), feature.properties.name, offsets);
+            setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
             map.on('zoomend', function() {
-              setLabelPosition(label, layer.getBounds().getCenter(), feature.properties.name, offsets);
+              setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
               label.getElement().style.fontSize = getFontSize(map.getZoom());
             });
             // Set the initial font size to 8px
