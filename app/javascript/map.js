@@ -1,15 +1,20 @@
 $(document).ready(function() {
   // Map settings
   var map = L.map('map', {
-    minZoom: 4,
+    minZoom: 5,
     maxZoom: 7
-  }).setView([43, 16], 4);
+  }).setView([43, 16], 5);
 
   // Assign style to the map
   Esri_WorldImagery.addTo(map);
 
   // Map bounds
-  map.setMaxBounds(map.getBounds());
+  bounds = map.getBounds()
+  bounds._northEast.lat = 58.52108149544362
+  bounds._northEast.lng = 50.75781250000001
+  bounds._southWest.lat = 18.844673680771795
+  bounds._southWest.lng = -20.765625000000002
+  map.setMaxBounds(bounds);
 
   // Function to get the color from the Ruby object
   var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
