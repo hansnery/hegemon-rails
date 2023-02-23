@@ -53,16 +53,30 @@ $(document).ready(function() {
         },
         onEachFeature: function(feature, layer) {
           if (feature.properties && feature.properties.name) {
-            var labelContent = '<div class="label">' + feature.properties.name + '</div>'; /* wrap the label text in a div with the .label class */
+            var labelContent = '<div class="label">' + feature.properties.name + '</div>';
             var label = L.marker(layer.getBounds().getCenter(), {
               icon: L.divIcon({
-                className: 'label-icon', /* add a class to the divIcon */
-                html: labelContent /* set the label content as the HTML of the divIcon */
+                className: 'label-icon',
+                html: labelContent,
+                iconSize: null
               })
             }).addTo(map);
+            map.on('zoomend', function() {
+              if (map.getZoom() <= 4 ) {
+                label.getElement().style.fontSize = '8px';
+              } else if (map.getZoom() > 4 && map.getZoom() < 6) {
+                label.getElement().style.fontSize = '16px';
+              } else {
+                label.getElement().style.fontSize = '30px';
+              }
+            });
+            // Set the initial font size to 8px
+            label.getElement().style.fontSize = '8px';
           }
         }
       }).addTo(map);
     }
   });
+
+
 });
