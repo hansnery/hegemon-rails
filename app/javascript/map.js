@@ -42,7 +42,7 @@ $(document).ready(function() {
     return provinces.find(province => province.name === name).color;
   }
 
-  // Color map
+  // Map
   $.ajax({
     url: "https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson",
     dataType: "json",
@@ -54,6 +54,182 @@ $(document).ready(function() {
         onEachFeature: function(feature, layer) {
           if (feature.properties && feature.properties.name) {
             var labelContent = '<div class="label">' + feature.properties.name + '</div>';
+            var offsets = {
+              'Lusitania': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Mauretania Tingitana': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Baetica': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Tarraconensis': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Aquitania': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Lugdunensis': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Mauretania Caesariensis': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Numidia': {
+                4: [-5, -10],
+                5: [-15, -30],
+                6: [-30, -60],
+                7: [-60, -120]
+              },
+              'Creta et Cyrene': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Alpes Graiae et Poeninae': {
+                4: [-999, -999],
+                5: [-999, -999],
+                6: [-20, -60],
+                7: [-40, -120]
+              },
+              'Alpes Cottiae': {
+                4: [-999, -999],
+                5: [-999, -999],
+                6: [-10, -20],
+                7: [-20, -40]
+              },
+              'Alpes Maritimae': {
+                4: [-999, -999],
+                5: [-999, -999],
+                6: [-20, 10],
+                7: [-40, 20]
+              },
+              'Narbonensis': {
+                4: [-10, 5],
+                5: [-30, 10],
+                6: [-60, 20],
+                7: [-120, 40]
+              },
+              'Raetia': {
+                4: [0, -15],
+                5: [0, -30],
+                6: [0, -60],
+                7: [0, -120]
+              },
+              'Germania Superior': {
+                4: [0, 10],
+                5: [0, 20],
+                6: [0, 40],
+                7: [0, 80]
+              },
+              'Pannonia Inferior': {
+                4: [0, 10],
+                5: [0, 20],
+                6: [0, 40],
+                7: [0, 80]
+              },
+              'Dacia': {
+                4: [-10, 0],
+                5: [-20, 0],
+                6: [-40, 0],
+                7: [-80, 0]
+              },
+              'Moesia Superior': {
+                4: [-10, -10],
+                5: [-20, -20],
+                6: [-40, -40],
+                7: [-80, -80]
+              },
+              'Macedonia': {
+                4: [-10, 0],
+                5: [-20, 0],
+                6: [-40, 0],
+                7: [-80, 0]
+              },
+              'Asia': {
+                4: [0, -15],
+                5: [0, -30],
+                6: [0, -60],
+                7: [0, -120]
+              },
+              'Bithynia et Pontus': {
+                4: [-10, -10],
+                5: [-30, -30],
+                6: [-60, -60],
+                7: [-120, -120]
+              },
+              'Galatia et Cappadocia': {
+                4: [0, -10],
+                5: [0, -30],
+                6: [0, -60],
+                7: [0, -120]
+              },
+              'Lycia et Pamphylia': {
+                4: [-5, -5],
+                5: [-10, -10],
+                6: [-20, -20],
+                7: [-40, -40]
+              },
+              'Cilicia': {
+                4: [-5, -5],
+                5: [-10, -10],
+                6: [-20, -20],
+                7: [-40, -40]
+              },
+              'Cyprus': {
+                4: [-10, 0],
+                5: [-20, 0],
+                6: [-40, 0],
+                7: [-80, 0]
+              },
+              'Syria': {
+                4: [0, 0],
+                5: [-10, 0],
+                6: [-20, 0],
+                7: [-40, 0]
+              },
+              'Arabia': {
+                4: [0, 0],
+                5: [-10, 0],
+                6: [-20, 0],
+                7: [-40, 0]
+              },
+              'Aegyptus': {
+                4: [0, -30],
+                5: [0, -60],
+                6: [0, -120],
+                7: [0, -240]
+              },
+              'Germania Inferior': {
+                4: [0, -10],
+                5: [0, -30],
+                6: [0, -60],
+                7: [0, -120]
+              }
+            };
             var label = L.marker(layer.getBounds().getCenter(), {
               icon: L.divIcon({
                 className: 'label-icon',
@@ -61,14 +237,10 @@ $(document).ready(function() {
                 iconSize: null
               })
             }).addTo(map);
+            setLabelPosition(label, layer.getBounds().getCenter(), feature.properties.name, offsets);
             map.on('zoomend', function() {
-              if (map.getZoom() <= 4 ) {
-                label.getElement().style.fontSize = '8px';
-              } else if (map.getZoom() > 4 && map.getZoom() < 6) {
-                label.getElement().style.fontSize = '16px';
-              } else {
-                label.getElement().style.fontSize = '30px';
-              }
+              setLabelPosition(label, layer.getBounds().getCenter(), feature.properties.name, offsets);
+              label.getElement().style.fontSize = getFontSize(map.getZoom());
             });
             // Set the initial font size to 8px
             label.getElement().style.fontSize = '8px';
@@ -78,5 +250,27 @@ $(document).ready(function() {
     }
   });
 
+  function getFontSize(zoom) {
+    if (zoom == 4) {
+      return '8px';
+    } else if (zoom > 4 && zoom < 6) {
+      return '16px';
+    } else {
+      return '18px';
+    }
+  }
 
+  function setLabelPosition(label, center, name, offsets) {
+    var point = map.latLngToLayerPoint(center);
+    var offset = [0, 0];
+    if (name in offsets) {
+      var zoom = map.getZoom();
+      if (zoom in offsets[name]) {
+        offset = offsets[name][zoom];
+      }
+    }
+    var adjustedPoint = L.point(point.x + offset[0], point.y + offset[1]);
+    var adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
+    label.setLatLng(adjustedLatLng);
+  }
 });
