@@ -39,9 +39,9 @@ class MapsController < ApplicationController
         data['features'].map do |feature|
           province = Province.new
           province.name = feature['properties']['name']
-          province.color = 'red'
           province.geometry = feature['geometry']['coordinates']
           province.map_id = @map.id
+          province.armies = 1
           province.save
         end
       else

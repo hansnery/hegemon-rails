@@ -15,7 +15,8 @@ $(document).ready(function() {
   var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
 
   function getProvinceColor(name) {
-    return provinces.find(province => province.name === name).color;
+    // return provinces.find(province => province.name === name).color;
+    return 'red';
   }
 
   // Function to rename provinces and to get the name from the Ruby object
@@ -45,6 +46,11 @@ $(document).ready(function() {
     } else {
       return provinces.find(province => province.name === name).name;
     }
+  }
+
+  // Function to rename provinces and to get the name from the Ruby object
+  function getProvinceArmies(name) {
+    return provinces.find(province => province.name === name).armies;
   }
 
   // Map
@@ -77,7 +83,7 @@ $(document).ready(function() {
             // Add marker to represent armies
             var armyIcon = L.divIcon({
               className: 'army-marker',
-              html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">3</div>',
+              html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">' + getProvinceArmies(feature.properties.name) + '</div>',
               iconSize: [45, 28],
               iconAnchor: [15, 35]
             });
