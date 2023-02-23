@@ -299,9 +299,9 @@ $(document).ready(function() {
           // Add marker to represent armies
           var armyIcon = L.divIcon({
             className: 'army-marker',
-            html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number">3</div>',
-            iconSize: [32, 55],
-            iconAnchor: [10, 60]
+            html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">3</div>',
+            iconSize: [45, 28],
+            iconAnchor: [15, 35]
           });
           var armyMarker = L.marker(layer.getBounds().getCenter(), {
             icon: armyIcon
