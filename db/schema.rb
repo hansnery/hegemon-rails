@@ -15,6 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_23_211146) do
     t.string "name"
     t.integer "min_players"
     t.integer "max_players"
+    t.integer "num_players"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

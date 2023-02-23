@@ -4,6 +4,7 @@ class CreateMaps < ActiveRecord::Migration[7.0]
       t.string :name
       t.integer :min_players
       t.integer :max_players
+      t.integer :num_players
 
       t.timestamps
     end

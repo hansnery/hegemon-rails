@@ -26,6 +26,7 @@ class MapsController < ApplicationController
     @map = Map.new(map_params)
 
     @map.name = "Roman Empire"
+    @map.min_players = 2
 
     respond_to do |format|
       if @map.save
@@ -82,6 +83,6 @@ class MapsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def map_params
-      params.fetch(:map, {})
+      params.require(:map).permit(:name, :min_players, :max_players, :num_players)
     end
 end
