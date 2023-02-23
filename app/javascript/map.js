@@ -172,6 +172,12 @@ $(document).ready(function() {
                 6: [0, 40],
                 7: [0, 80]
               },
+              'Pannonia Superior': {
+                4: [5, -10],
+                5: [10, -20],
+                6: [20, -40],
+                7: [40, -80]
+              },
               'Pannonia Inferior': {
                 4: [0, 10],
                 5: [0, 20],
