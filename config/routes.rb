@@ -5,5 +5,4 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "maps#index"
   get 'provinces', to: 'provinces#index', defaults: { format: 'json' }
-  # get 'provinces', to: 'provinces#show', defaults: { format: 'json' }
 end
