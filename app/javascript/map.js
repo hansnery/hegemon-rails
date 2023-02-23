@@ -15,8 +15,23 @@ $(document).ready(function() {
   var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
 
   function getProvinceColor(name) {
-    // return provinces.find(province => province.name === name).color;
-    return 'red';
+    province_owner = provinces.find(province => province.name === name).owner
+    switch(province_owner) {
+      case 'Player 1':
+        return 'red'
+        break;
+      case 'Player 2':
+        return 'blue'
+        break;
+      case 'Player 3':
+        return 'yellow'
+        break;
+      case 'Player 4':
+        return 'green'
+        break;
+      default:
+        return 'white'
+    }
   }
 
   // Function to rename provinces and to get the name from the Ruby object

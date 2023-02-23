@@ -1,3 +1,5 @@
+require 'hegemon/province_utils'
+
 class MapsController < ApplicationController
   before_action :set_map, only: %i[ show edit update destroy ]
 
@@ -27,6 +29,7 @@ class MapsController < ApplicationController
 
     @map.name = "Roman Empire"
     @map.min_players = 2
+    @map.num_players = @map.max_players
 
     respond_to do |format|
       if @map.save
@@ -43,6 +46,13 @@ class MapsController < ApplicationController
           province.geometry = feature['geometry']['coordinates']
           province.map_id = @map.id
           province.armies = 1
+          province.save
+        end
+
+        provinces_with_owners = Hegemon::ProvinceUtils.assign_owners_to_provinces(@map.provinces, @map.num_players)
+
+        # Save the provinces with owners to the database
+        provinces_with_owners.each do |province|
           province.save
         end
       else

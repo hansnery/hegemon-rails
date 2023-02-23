@@ -16,9 +16,6 @@
 
   <body>
     <%= yield %>
-    <script type="application/json" id="provinces-json">
-      <%= raw @provinces_json %>
-    </script>
   </body>
   <%= javascript_include_tag 'map_styles' %>
   <%= javascript_include_tag 'map_labels' %>
