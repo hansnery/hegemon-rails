@@ -34,6 +34,26 @@ $(document).ready(function() {
     }
   }
 
+  function getProvinceOwner(name) {
+    province_owner = provinces.find(province => province.name === name).owner
+    switch(province_owner) {
+      case 'Player 1':
+        return 'Player 1'
+        break;
+      case 'Player 2':
+        return 'Player 2'
+        break;
+      case 'Player 3':
+        return 'Player 3'
+        break;
+      case 'Player 4':
+        return 'Player 4'
+        break;
+      default:
+        return 'Barbarians'
+    }
+  }
+
   // Function to rename provinces and to get the name from the Ruby object
   function getProvinceName(name) {
     if (name === 'I') {
@@ -77,7 +97,22 @@ $(document).ready(function() {
         style: function(feature) {
           return { color: getProvinceColor(feature.properties.name) };
         },
+        // On each province do the following
         onEachFeature: function(feature, layer) {
+          // Tooltip showing owner of province but only when clicked
+          var tooltipBound = false; // flag to track if tooltip has been bound
+          layer.on('click', function(e) {
+            if (!tooltipBound) { // bind tooltip only if it hasn't already been bound
+              layer.bindTooltip(getProvinceOwner(feature.properties.name)).openTooltip();
+              tooltipBound = true;
+            }
+          });
+          layer.on('mouseover', function(e) {
+            if (tooltipBound) { // unbind tooltip if it has been bound
+              layer.unbindTooltip();
+              tooltipBound = false;
+            }
+          });
           if (feature.properties && feature.properties.name) {
             var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
             var label = L.marker(layer.getBounds().getCenter(), {
