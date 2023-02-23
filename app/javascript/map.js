@@ -41,7 +41,7 @@ $(document).ready(function() {
   function getProvinceColor(name) {
     return provinces.find(province => province.name === name).color;
   }
-  // Function to get the name from the Ruby object
+  // Function to rename provinces and to get the name from the Ruby object
   function getProvinceName(name) {
     if (name === 'I') {
       return 'Roma';
@@ -60,7 +60,7 @@ $(document).ready(function() {
     } else if (name === 'V') {
       return 'Ancona';
     } else if (name === 'IV') {
-      return 'Umbria'; //Interamna or Via Flaminia
+      return 'Umbria'; //Umbria, Interamna or Via Flaminia
     } else if (name === 'II') {
       return 'Brundinium';
     } else if (name === 'III') {
@@ -69,9 +69,6 @@ $(document).ready(function() {
       return provinces.find(province => province.name === name).name;
     }
   }
-  // province = provinces.find(province => province.name === 'I');
-  // province.name = 'Roma';
-  // console.log(provinces)
   // Map
   $.ajax({
     url: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
