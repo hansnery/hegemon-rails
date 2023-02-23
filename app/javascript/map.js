@@ -69,236 +69,246 @@ $(document).ready(function() {
       return provinces.find(province => province.name === name).name;
     }
   }
-  // Map
-  $.ajax({
-    url: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
-    dataType: "json",
-    success: function(data) {
-      L.geoJSON(data, {
-        style: function(feature) {
-          return { color: getProvinceColor(feature.properties.name) };
-        },
-        onEachFeature: function(feature, layer) {
-          if (feature.properties && feature.properties.name) {
-            var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
-            var offsets = {
-              'Lusitania': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Mauretania Tingitana': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Baetica': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Tarraconensis': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Aquitania': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Lugdunensis': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Mauretania Caesariensis': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Numidia': {
-                4: [-5, -10],
-                5: [-15, -30],
-                6: [-30, -60],
-                7: [-60, -120]
-              },
-              'Creta et Cyrene': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Alpes Graiae et Poeninae': {
-                4: [-999, -999],
-                5: [-999, -999],
-                6: [-20, -60],
-                7: [-40, -120]
-              },
-              'Alpes Cottiae': {
-                4: [-999, -999],
-                5: [-999, -999],
-                6: [-10, -20],
-                7: [-20, -40]
-              },
-              'Alpes Maritimae': {
-                4: [-999, -999],
-                5: [-999, -999],
-                6: [-20, 10],
-                7: [-40, 20]
-              },
-              'Narbonensis': {
-                4: [-10, 5],
-                5: [-30, 10],
-                6: [-60, 20],
-                7: [-120, 40]
-              },
-              'Raetia': {
-                4: [0, -15],
-                5: [0, -30],
-                6: [0, -60],
-                7: [0, -120]
-              },
-              'Germania Superior': {
-                4: [0, 10],
-                5: [0, 20],
-                6: [0, 40],
-                7: [0, 80]
-              },
-              'Pannonia Superior': {
-                4: [5, -10],
-                5: [10, -20],
-                6: [20, -40],
-                7: [40, -80]
-              },
-              'Pannonia Inferior': {
-                4: [0, 10],
-                5: [0, 20],
-                6: [0, 40],
-                7: [0, 80]
-              },
-              'Dacia': {
-                4: [-10, 0],
-                5: [-20, 0],
-                6: [-40, 0],
-                7: [-80, 0]
-              },
-              'Moesia Superior': {
-                4: [-10, -10],
-                5: [-20, -20],
-                6: [-40, -40],
-                7: [-80, -80]
-              },
-              'Macedonia': {
-                4: [-10, 0],
-                5: [-20, 0],
-                6: [-40, 0],
-                7: [-80, 0]
-              },
-              'Asia': {
-                4: [0, -15],
-                5: [0, -30],
-                6: [0, -60],
-                7: [0, -120]
-              },
-              'Bithynia et Pontus': {
-                4: [-10, -10],
-                5: [-30, -30],
-                6: [-60, -60],
-                7: [-120, -120]
-              },
-              'Galatia et Cappadocia': {
-                4: [0, -10],
-                5: [0, -30],
-                6: [0, -60],
-                7: [0, -120]
-              },
-              'Lycia et Pamphylia': {
-                4: [-5, -5],
-                5: [-10, -10],
-                6: [-20, -20],
-                7: [-40, -40]
-              },
-              'Cilicia': {
-                4: [-5, -5],
-                5: [-10, -10],
-                6: [-20, -20],
-                7: [-40, -40]
-              },
-              'Cyprus': {
-                4: [-10, 0],
-                5: [-20, 0],
-                6: [-40, 0],
-                7: [-80, 0]
-              },
-              'Syria': {
-                4: [0, 0],
-                5: [-10, 0],
-                6: [-20, 0],
-                7: [-40, 0]
-              },
-              'Arabia': {
-                4: [0, 0],
-                5: [-10, 0],
-                6: [-20, 0],
-                7: [-40, 0]
-              },
-              'Aegyptus': {
-                4: [0, -30],
-                5: [0, -60],
-                6: [0, -120],
-                7: [0, -240]
-              },
-              'Germania Inferior': {
-                4: [0, -10],
-                5: [0, -30],
-                6: [0, -60],
-                7: [0, -120]
-              },
-              'Mediolanum': {
-                4: [-5, -5],
-                5: [-10, -10],
-                6: [-20, -20],
-                7: [-40, -40]
-              },
-              'Ariminium': {
-                4: [0, -10],
-                5: [0, -20],
-                6: [0, -40],
-                7: [0, -80]
-              },
-              'Arretium': {
-                4: [-10, 0],
-                5: [-20, 0],
-                6: [-40, 0],
-                7: [-80, 0]
-              }
-            };
-            var label = L.marker(layer.getBounds().getCenter(), {
-              icon: L.divIcon({
-                className: 'label-icon',
-                html: labelContent,
-                iconSize: null
-              })
-            }).addTo(map);
-            setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
-            map.on('zoomend', function() {
-              setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
-              label.getElement().style.fontSize = getFontSize(map.getZoom());
-            });
-            // Set the initial font size to 8px
-            label.getElement().style.fontSize = '8px';
-          }
-        }
-      }).addTo(map);
+
+  // Set provinces labels offsets
+  var offsets = {
+    'Lusitania': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Mauretania Tingitana': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Baetica': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Tarraconensis': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Aquitania': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Lugdunensis': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Mauretania Caesariensis': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Numidia': {
+      4: [-5, -10],
+      5: [-15, -30],
+      6: [-30, -60],
+      7: [-60, -120]
+    },
+    'Creta et Cyrene': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Alpes Graiae et Poeninae': {
+      4: [-999, -999],
+      5: [-999, -999],
+      6: [-20, -60],
+      7: [-40, -120]
+    },
+    'Alpes Cottiae': {
+      4: [-999, -999],
+      5: [-999, -999],
+      6: [-10, -20],
+      7: [-20, -40]
+    },
+    'Alpes Maritimae': {
+      4: [-999, -999],
+      5: [-999, -999],
+      6: [-20, 10],
+      7: [-40, 20]
+    },
+    'Narbonensis': {
+      4: [-10, 5],
+      5: [-30, 10],
+      6: [-60, 20],
+      7: [-120, 40]
+    },
+    'Raetia': {
+      4: [0, -15],
+      5: [0, -30],
+      6: [0, -60],
+      7: [0, -120]
+    },
+    'Germania Superior': {
+      4: [0, 10],
+      5: [0, 20],
+      6: [0, 40],
+      7: [0, 80]
+    },
+    'Pannonia Superior': {
+      4: [5, -10],
+      5: [10, -20],
+      6: [20, -40],
+      7: [40, -80]
+    },
+    'Pannonia Inferior': {
+      4: [0, 10],
+      5: [0, 20],
+      6: [0, 40],
+      7: [0, 80]
+    },
+    'Dacia': {
+      4: [-10, 0],
+      5: [-20, 0],
+      6: [-40, 0],
+      7: [-80, 0]
+    },
+    'Moesia Superior': {
+      4: [-10, -10],
+      5: [-20, -20],
+      6: [-40, -40],
+      7: [-80, -80]
+    },
+    'Macedonia': {
+      4: [-10, 0],
+      5: [-20, 0],
+      6: [-40, 0],
+      7: [-80, 0]
+    },
+    'Asia': {
+      4: [0, -15],
+      5: [0, -30],
+      6: [0, -60],
+      7: [0, -120]
+    },
+    'Bithynia et Pontus': {
+      4: [-10, -10],
+      5: [-30, -30],
+      6: [-60, -60],
+      7: [-120, -120]
+    },
+    'Galatia et Cappadocia': {
+      4: [0, -10],
+      5: [0, -30],
+      6: [0, -60],
+      7: [0, -120]
+    },
+    'Lycia et Pamphylia': {
+      4: [-5, -5],
+      5: [-10, -10],
+      6: [-20, -20],
+      7: [-40, -40]
+    },
+    'Cilicia': {
+      4: [-5, -5],
+      5: [-10, -10],
+      6: [-20, -20],
+      7: [-40, -40]
+    },
+    'Cyprus': {
+      4: [-10, 0],
+      5: [-20, 0],
+      6: [-40, 0],
+      7: [-80, 0]
+    },
+    'Syria': {
+      4: [0, 0],
+      5: [-10, 0],
+      6: [-20, 0],
+      7: [-40, 0]
+    },
+    'Arabia': {
+      4: [0, 0],
+      5: [-10, 0],
+      6: [-20, 0],
+      7: [-40, 0]
+    },
+    'Aegyptus': {
+      4: [0, -30],
+      5: [0, -60],
+      6: [0, -120],
+      7: [0, -240]
+    },
+    'Germania Inferior': {
+      4: [0, -10],
+      5: [0, -30],
+      6: [0, -60],
+      7: [0, -120]
+    },
+    'Mediolanum': {
+      4: [-5, -5],
+      5: [-10, -10],
+      6: [-20, -20],
+      7: [-40, -40]
+    },
+    'Ariminium': {
+      4: [0, -10],
+      5: [0, -20],
+      6: [0, -40],
+      7: [0, -80]
+    },
+    'Arretium': {
+      4: [-10, 0],
+      5: [-20, 0],
+      6: [-40, 0],
+      7: [-80, 0]
     }
+  };
+
+  // Map
+  $.getJSON('https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson', function(data) {
+    var provincesLayer = L.geoJSON(data, {
+      style: function(feature) {
+        return { color: getProvinceColor(feature.properties.name) };
+      },
+      onEachFeature: function(feature, layer) {
+        if (feature.properties && feature.properties.name) {
+          var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
+          var label = L.marker(layer.getBounds().getCenter(), {
+            icon: L.divIcon({
+              className: 'label-icon',
+              html: labelContent,
+              iconSize: null
+            })
+          }).addTo(map);
+          setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
+          map.on('zoomend', function() {
+            setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
+            label.getElement().style.fontSize = getFontSize(map.getZoom());
+          });
+          // Set the initial font size to 8px
+          label.getElement().style.fontSize = '8px';
+
+          // Add marker to represent armies
+          var armyIcon = L.divIcon({
+            className: 'army-marker',
+            html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number">3</div>',
+            iconSize: [32, 55],
+            iconAnchor: [10, 60]
+          });
+          var armyMarker = L.marker(layer.getBounds().getCenter(), {
+            icon: armyIcon
+          }).addTo(map);
+        }
+      }
+    }).addTo(map);
   });
 
   function getFontSize(zoom) {
