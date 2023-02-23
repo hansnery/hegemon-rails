@@ -3,13 +3,13 @@ class MapsController < ApplicationController
 
   # GET /maps or /maps.json
   def index
-    @provinces = Province.all
-    @provinces_json = @provinces.to_json
     @maps = Map.all
   end
 
   # GET /maps/1 or /maps/1.json
   def show
+    @provinces = @map.provinces.all
+    @provinces_json = @provinces.to_json
   end
 
   # GET /maps/new
@@ -25,10 +25,25 @@ class MapsController < ApplicationController
   def create
     @map = Map.new(map_params)
 
+    @map.name = "Roman Empire"
+
     respond_to do |format|
       if @map.save
         format.html { redirect_to map_url(@map), notice: "Map was successfully created." }
         format.json { render :show, status: :created, location: @map }
+
+        file_path = Rails.root.join('provinces.geojson')
+        file_contents = File.read(file_path)
+        data = JSON.parse(file_contents)
+
+        data['features'].map do |feature|
+          province = Province.new
+          province.name = feature['properties']['name']
+          province.color = 'red'
+          province.geometry = feature['geometry']['coordinates']
+          province.map_id = @map.id
+          province.save
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @map.errors, status: :unprocessable_entity }
