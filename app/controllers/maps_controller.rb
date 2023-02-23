@@ -3,6 +3,8 @@ class MapsController < ApplicationController
 
   # GET /maps or /maps.json
   def index
+    @provinces = Province.all
+    @provinces_json = @provinces.to_json
     @maps = Map.all
   end
 

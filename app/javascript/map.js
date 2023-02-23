@@ -33,16 +33,9 @@ $(document).ready(function() {
   // Map bounds
   map.setMaxBounds(map.getBounds());
   // Function to generate a unique color to each feature of a GeoJSON file
-  function getColor(str) {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    var color = Math.abs(hash % 16777216).toString(16);
-    while (color.length < 6) {
-      color = "0" + color;
-    }
-    return "#" + color;
+  var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
+  function getColor(name) {
+    return provinces.find(province => province.name === name).color;
   }
   // Color map
   $.ajax({
@@ -51,7 +44,7 @@ $(document).ready(function() {
     success: function(data) {
       L.geoJSON(data, {
         style: function(feature) {
-          return { color: 'red' }; // Change the color of the polygon here
+          return { color: getColor(feature.properties.name) };
         }
       }).addTo(map);
     }
