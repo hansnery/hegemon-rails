@@ -45,3 +45,42 @@
   margin-top: -33px;
   margin-left: 5px;
 }
+
+.province-title {
+  /* font-family: 'Nova Square', cursive; */
+  font-family: 'MedievalSharp', cursive;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.province-desc {
+  font-size: 12px;
+}
+
+.army-popup {
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.army-popup-content {
+  text-align: center;
+}
+
+.marchBtn {
+  border-color: white;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  width: 150px;
+}
+
+.marchBtn:hover {
+  border-color: black;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+  background-color: transparent;
+  border: none;
+  box-shadow: none !important;
+}

@@ -15,3 +15,23 @@
 <script type="application/json" id="provinces-json">
   <%= raw @provinces_json %>
 </script>
+
+<h1>Comparing armies for <%= @map.name %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Province</th>
+      <th>Armies</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @provinces.each do |province| %>
+      <tr>
+        <td><%= province.id %></td>
+        <td><%= province.name %></td>
+        <td><%= province.armies %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

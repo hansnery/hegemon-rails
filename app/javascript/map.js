@@ -16,24 +16,45 @@ $(document).ready(function() {
   bounds._southWest.lng = -20.765625000000002
   map.setMaxBounds(bounds);
 
-  // Function to get the color from the Ruby object
+  function getFontSize(zoom) {
+    if (zoom == 4) {
+      return '8px';
+    } else if (zoom > 4 && zoom < 6) {
+      return '16px';
+    } else {
+      return '18px';
+    }
+  }
+
+  function setLabelPosition(label, center, name, offsets) {
+    var point = map.latLngToLayerPoint(center);
+    var offset = [0, 0];
+    if (name in offsets) {
+      var zoom = map.getZoom();
+      if (zoom in offsets[name]) {
+        offset = offsets[name][zoom];
+      }
+    }
+    var adjustedPoint = L.point(point.x + offset[0], point.y + offset[1]);
+    var adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
+    label.setLatLng(adjustedLatLng);
+  }
+
+  // Variable to get the JSON element from the page and create the Ruby objects
   var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
 
+  // Function to get the color from the Ruby object
   function getProvinceColor(name) {
     province_owner = provinces.find(province => province.name === name).owner
     switch(province_owner) {
       case 'Player 1':
-        return 'red'
-        break;
+        return 'rgb(255, 0, 0)'
       case 'Player 2':
-        return 'blue'
-        break;
+        return 'rgb(0, 0, 255)'
       case 'Player 3':
-        return 'yellow'
-        break;
+        return 'rgb(255, 215, 0)'
       case 'Player 4':
-        return 'green'
-        break;
+        return 'rgb(0, 255, 0)'
       default:
         return 'white'
     }
@@ -44,16 +65,12 @@ $(document).ready(function() {
     switch(province_owner) {
       case 'Player 1':
         return 'Player 1'
-        break;
       case 'Player 2':
         return 'Player 2'
-        break;
       case 'Player 3':
         return 'Player 3'
-        break;
       case 'Player 4':
         return 'Player 4'
-        break;
       default:
         return 'Barbarians'
     }
@@ -88,9 +105,50 @@ $(document).ready(function() {
     }
   }
 
-  // Function to rename provinces and to get the name from the Ruby object
   function getProvinceArmies(name) {
     return provinces.find(province => province.name === name).armies;
+  }
+
+  function getProvinceNearbyProvinces(name) {
+    const nearbyProvinces = provinces.find(province => province.name === name).nearby_provinces;
+    const namesArray = [];
+
+    nearbyProvinces.forEach(function(object) {
+      namesArray.push(object.name);
+    });
+
+    return namesArray
+  }
+
+  function getProvince(name) {
+    return provinces.find(province => province.name === name);
+  }
+
+  var armyMarkerClicked = false;
+
+  const mapId = provinces[0].map_id;
+
+  // Reset selected provinces variables
+  var firstProvince = 0;
+  var secondProvince = 0;
+
+  function bindProvinceOwnerTooltip(layer, feature) {
+    var tooltipBound = false;
+
+    // Province owner tooltip
+    layer.on('click', function(e) {
+      if (!tooltipBound) { // bind tooltip only if it hasn't already been bound
+        var provinceOwner = getProvinceOwner(feature.properties.name)
+        layer.bindTooltip('<div class="province-title">' + feature.properties.name + '</div><div class="province-desc"><hr>Owned by ' + provinceOwner + '</div>').openTooltip();
+        tooltipBound = true;
+      }
+    });
+    layer.on('mouseover', function(e) {
+      if (tooltipBound) { // unbind tooltip if it has been bound
+        layer.unbindTooltip();
+        tooltipBound = false;
+      }
+    });
   }
 
   // Map
@@ -99,26 +157,21 @@ $(document).ready(function() {
     dataType: 'json',
     success: function(data) {
       var provincesLayer = L.geoJSON(data, {
+        // Color province
         style: function(feature) {
-          return { color: getProvinceColor(feature.properties.name) };
+          return {
+            color: getProvinceColor(feature.properties.name),
+            fillOpacity: 0.5
+          };
         },
         // On each province do the following
         onEachFeature: function(feature, layer) {
           // Tooltip showing owner of province but only when clicked
-          var tooltipBound = false; // flag to track if tooltip has been bound
-          layer.on('click', function(e) {
-            if (!tooltipBound) { // bind tooltip only if it hasn't already been bound
-              layer.bindTooltip(getProvinceOwner(feature.properties.name)).openTooltip();
-              tooltipBound = true;
-            }
-          });
-          layer.on('mouseover', function(e) {
-            if (tooltipBound) { // unbind tooltip if it has been bound
-              layer.unbindTooltip();
-              tooltipBound = false;
-            }
-          });
+          bindProvinceOwnerTooltip(layer, feature);
+
+          // Ensure that a label is only added to a province if that province has a "name" property in its GeoJSON data.
           if (feature.properties && feature.properties.name) {
+            // Province marker
             var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
             var label = L.marker(layer.getBounds().getCenter(), {
               icon: L.divIcon({
@@ -127,11 +180,14 @@ $(document).ready(function() {
                 iconSize: null
               })
             }).addTo(map);
+
+            // Set labels
             setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
             map.on('zoomend', function() {
               setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
               label.getElement().style.fontSize = getFontSize(map.getZoom());
             });
+
             // Set the initial font size to 8px
             label.getElement().style.fontSize = '8px';
 
@@ -145,33 +201,59 @@ $(document).ready(function() {
             var armyMarker = L.marker(layer.getBounds().getCenter(), {
               icon: armyIcon
             }).addTo(map);
+
+            // Get nearby provinces
+            var nearbyProvinces = getProvinceNearbyProvinces(feature.properties.name);
+
+            armyMarker.on('click', function(e) {
+              if(!armyMarkerClicked) {
+                armyMarkerClicked = true;
+                firstProvince = getProvince(feature.properties.name);
+                // Highlight the neighbouring provinces
+                provincesLayer.setStyle(function(feature) {
+                  if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
+                    return {
+                      color: getProvinceColor(feature.properties.name),
+                      fillOpacity: 1.0
+                    };
+                  }
+                });
+              } else {
+                secondProvince = getProvince(feature.properties.name);
+                armyMarkerClicked = false;
+                // Make POST request to Rails backend
+                fetch('/maps/' + mapId + '/' + firstProvince.id + '/marches_to/' + secondProvince.id)
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    console.log('Success!', data);
+                    location.reload();
+
+                    // Select the element
+                    // const provincesJSON = document.getElementById('provinces-json');
+
+                    // Set its inner HTML to the data received from the backend
+                    // provincesJSON.innerHTML = JSON.stringify(data);
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                  });
+                // Restore the default colors of the neighbouring provinces
+                provincesLayer.setStyle(function(feature) {
+                  return {
+                    color: getProvinceColor(feature.properties.name),
+                    fillOpacity: 0.5
+                  };
+                });
+              }
+            });
           }
         }
       }).addTo(map);
     }
   });
-
-  function getFontSize(zoom) {
-    if (zoom == 4) {
-      return '8px';
-    } else if (zoom > 4 && zoom < 6) {
-      return '16px';
-    } else {
-      return '18px';
-    }
-  }
-
-  function setLabelPosition(label, center, name, offsets) {
-    var point = map.latLngToLayerPoint(center);
-    var offset = [0, 0];
-    if (name in offsets) {
-      var zoom = map.getZoom();
-      if (zoom in offsets[name]) {
-        offset = offsets[name][zoom];
-      }
-    }
-    var adjustedPoint = L.point(point.x + offset[0], point.y + offset[1]);
-    var adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
-    label.setLatLng(adjustedLatLng);
-  }
 });
