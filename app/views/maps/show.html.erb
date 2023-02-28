@@ -6,10 +6,10 @@
 <div id="map" style="height: 800px; width: 1400px;"></div>
 
 <div>
-  <%= link_to "Edit this map", edit_map_path(@map) %> |
-  <%= link_to "Back to maps", maps_path %>
+<%= link_to "Edit this map", edit_map_path(@map) %> |
+<%= link_to "Back to maps", maps_path %>
 
-  <%= button_to "Destroy this map", @map, method: :delete %>
+<%= button_to "Destroy this map", @map, method: :delete %>
 </div>
 
 <script type="application/json" id="provinces-json">
@@ -19,19 +19,20 @@
 <h1>Comparing armies for <%= @map.name %></h1>
 
 <table>
-  <thead>
+<thead>
+  <tr>
+    <th>Province</th>
+    <th>Armies</th>
+  </tr>
+</thead>
+<tbody>
+  <% @provinces.each do |province| %>
     <tr>
-      <th>Province</th>
-      <th>Armies</th>
+      <td><%= province.id %></td>
+      <td><%= province.name %></td>
+      <td><%= province.armies %></td>
     </tr>
-  </thead>
-  <tbody>
-    <% @provinces.each do |province| %>
-      <tr>
-        <td><%= province.id %></td>
-        <td><%= province.name %></td>
-        <td><%= province.armies %></td>
-      </tr>
-    <% end %>
-  </tbody>
+  <% end %>
+</tbody>
 </table>
+

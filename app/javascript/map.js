@@ -14,6 +14,8 @@ $(document).ready(function() {
   bounds._northEast.lng = 50.75781250000001
   bounds._southWest.lat = 18.844673680771795
   bounds._southWest.lng = -20.765625000000002
+
+  // Set map bounds
   map.setMaxBounds(bounds);
 
   function getFontSize(zoom) {
@@ -151,109 +153,124 @@ $(document).ready(function() {
     });
   }
 
-  // Map
-  $.ajax({
-    url: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
-    dataType: 'json',
-    success: function(data) {
-      var provincesLayer = L.geoJSON(data, {
-        // Color province
-        style: function(feature) {
-          return {
-            color: getProvinceColor(feature.properties.name),
-            fillOpacity: 0.5
-          };
-        },
-        // On each province do the following
-        onEachFeature: function(feature, layer) {
-          // Tooltip showing owner of province but only when clicked
-          bindProvinceOwnerTooltip(layer, feature);
+  // Declare a new layerGroup for armyMarker
+  var armyLayer = L.layerGroup();
 
-          // Ensure that a label is only added to a province if that province has a "name" property in its GeoJSON data.
-          if (feature.properties && feature.properties.name) {
-            // Province marker
-            var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
-            var label = L.marker(layer.getBounds().getCenter(), {
-              icon: L.divIcon({
-                className: 'label-icon',
-                html: labelContent,
-                iconSize: null
+  function drawMap() {
+    $.ajax({
+      url: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
+      dataType: 'json',
+      success: function(data) {
+        var provincesLayer = L.geoJSON(data, {
+          // Color province
+          style: function(feature) {
+            return {
+              color: getProvinceColor(feature.properties.name),
+              fillOpacity: 0.5
+            };
+          },
+          // On each province do the following
+          onEachFeature: function(feature, layer) {
+            // Tooltip showing owner of province but only when clicked
+            bindProvinceOwnerTooltip(layer, feature);
+
+            // Ensure that a label is only added to a province if that province has a "name" property in its GeoJSON data.
+            if (feature.properties && feature.properties.name) {
+              // Province marker
+              var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
+              var label = L.marker(layer.getBounds().getCenter(), {
+                icon: L.divIcon({
+                  className: 'label-icon',
+                  html: labelContent,
+                  iconSize: null
+                })
+              }).addTo(map);
+
+              // Set labels
+              setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
+              map.on('zoomend', function() {
+                setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
+                label.getElement().style.fontSize = getFontSize(map.getZoom());
+              });
+
+              // Set the initial font size to 8px
+              label.getElement().style.fontSize = '8px';
+
+              // Add marker to represent armies
+              var armyIcon = L.divIcon({
+                className: 'army-marker',
+                html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">' + getProvinceArmies(feature.properties.name) + '</div>',
+                iconSize: [45, 28],
+                iconAnchor: [15, 35]
+              });
+              var armyMarker = L.marker(layer.getBounds().getCenter(), {
+                icon: armyIcon
               })
-            }).addTo(map);
 
-            // Set labels
-            setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
-            map.on('zoomend', function() {
-              setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
-              label.getElement().style.fontSize = getFontSize(map.getZoom());
-            });
+              // Add armyMarker to the layerGroup
+              armyLayer.addLayer(armyMarker);
 
-            // Set the initial font size to 8px
-            label.getElement().style.fontSize = '8px';
+              // Add the layerGroup to the map
+              armyLayer.addTo(map);
 
-            // Add marker to represent armies
-            var armyIcon = L.divIcon({
-              className: 'army-marker',
-              html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">' + getProvinceArmies(feature.properties.name) + '</div>',
-              iconSize: [45, 28],
-              iconAnchor: [15, 35]
-            });
-            var armyMarker = L.marker(layer.getBounds().getCenter(), {
-              icon: armyIcon
-            }).addTo(map);
+              // Get nearby provinces
+              var nearbyProvinces = getProvinceNearbyProvinces(feature.properties.name);
 
-            // Get nearby provinces
-            var nearbyProvinces = getProvinceNearbyProvinces(feature.properties.name);
+              armyMarker.on('click', function(e) {
+                if(!armyMarkerClicked) {
+                  armyMarkerClicked = true;
+                  firstProvince = getProvince(feature.properties.name);
+                  // Highlight the neighbouring provinces
+                  provincesLayer.setStyle(function(feature) {
+                    if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
+                      return {
+                        color: getProvinceColor(feature.properties.name),
+                        fillOpacity: 1.0
+                      };
+                    }
+                  });
+                } else {
+                  secondProvince = getProvince(feature.properties.name);
+                  armyMarkerClicked = false;
+                  // Make POST request to Rails backend
+                  fetch('/maps/' + mapId + '/' + firstProvince.id + '/marches_to/' + secondProvince.id)
+                    .then(response => {
+                      if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                    })
+                    .then(data => {
+                      console.log('Success!', data);
+                      // location.reload();
 
-            armyMarker.on('click', function(e) {
-              if(!armyMarkerClicked) {
-                armyMarkerClicked = true;
-                firstProvince = getProvince(feature.properties.name);
-                // Highlight the neighbouring provinces
-                provincesLayer.setStyle(function(feature) {
-                  if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
+                      // Select all elements with class "army-number"
+                      var armyNumbers = document.querySelectorAll('.army-number');
+
+                      // Loop through the armyNumbers and update their innerHTML
+                      for (var i = 0; i < armyNumbers.length; i++) {
+                        armyNumbers[i].innerHTML = data[i].armies;
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Error:', error);
+                    });
+                  // Restore the default colors of the neighbouring provinces
+                  provincesLayer.setStyle(function(feature) {
                     return {
                       color: getProvinceColor(feature.properties.name),
-                      fillOpacity: 1.0
+                      fillOpacity: 0.5
                     };
-                  }
-                });
-              } else {
-                secondProvince = getProvince(feature.properties.name);
-                armyMarkerClicked = false;
-                // Make POST request to Rails backend
-                fetch('/maps/' + mapId + '/' + firstProvince.id + '/marches_to/' + secondProvince.id)
-                  .then(response => {
-                    if (!response.ok) {
-                      throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                  })
-                  .then(data => {
-                    console.log('Success!', data);
-                    location.reload();
-
-                    // Select the element
-                    // const provincesJSON = document.getElementById('provinces-json');
-
-                    // Set its inner HTML to the data received from the backend
-                    // provincesJSON.innerHTML = JSON.stringify(data);
-                  })
-                  .catch(error => {
-                    console.error('Error:', error);
                   });
-                // Restore the default colors of the neighbouring provinces
-                provincesLayer.setStyle(function(feature) {
-                  return {
-                    color: getProvinceColor(feature.properties.name),
-                    fillOpacity: 0.5
-                  };
-                });
-              }
-            });
+                }
+              });
+            }
           }
-        }
-      }).addTo(map);
-    }
-  });
+        }).addTo(map);
+      }
+    });
+  }
+
+  // Map
+  drawMap();
 });
