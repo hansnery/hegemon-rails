@@ -56,34 +56,17 @@ $(document).ready(function() {
 
   // Function to get the color from the Ruby object
   function getProvinceColor(name) {
-    province_owner = provinces.find(province => province.name === name).owner
-    switch(province_owner) {
-      case 'Player 1':
-        return 'rgb(255, 0, 0)'
-      case 'Player 2':
-        return 'rgb(0, 0, 255)'
-      case 'Player 3':
-        return 'rgb(255, 215, 0)'
-      case 'Player 4':
-        return 'rgb(0, 255, 0)'
-      default:
-        return 'white'
-    }
+    province = provinces.find(province => province.name === name);
+    return province.color;
   }
 
   function getProvinceOwner(name) {
-    province_owner = provinces.find(province => province.name === name).owner
-    switch(province_owner) {
-      case 'Player 1':
-        return 'Player 1'
-      case 'Player 2':
-        return 'Player 2'
-      case 'Player 3':
-        return 'Player 3'
-      case 'Player 4':
-        return 'Player 4'
-      default:
-        return 'Barbarians'
+    province = provinces.find(province => province.name === name);
+    console.log(provinces);
+    if (province.owner == null) {
+      return 'Barbarians';
+    } else {
+      return province.owner;
     }
   }
 

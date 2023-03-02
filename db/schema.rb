@@ -42,14 +42,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_01_222118) do
   create_table "provinces", force: :cascade do |t|
     t.string "name"
     t.string "owner"
+    t.string "color"
     t.string "geometry"
     t.integer "armies"
-    t.integer "map_id", null: false
+    t.integer "map_id"
+    t.integer "player_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["map_id"], name: "index_provinces_on_map_id"
+    t.index ["player_id"], name: "index_provinces_on_player_id"
   end
 
   add_foreign_key "players", "maps"
   add_foreign_key "provinces", "maps"
+  add_foreign_key "provinces", "players"
 end

@@ -43,6 +43,7 @@ class MapsController < ApplicationController
           player = Player.new
           player.name = params["player_#{i}"]
           player.map_id = @map.id
+          player.color = "#" + SecureRandom.hex(3)
           player.save
         end
 
@@ -65,16 +66,22 @@ class MapsController < ApplicationController
         end
 
         # Divide the territories equally among the number of players
-        provinces_with_owners = Hegemon::ProvinceUtils.set_province_owners(@map.provinces, @map.num_players)
+        provinces = @map.provinces
+        players = @map.players.to_a
+        shuffled_provinces = provinces.shuffle.each_slice((provinces.size.to_f / players.size).ceil)
 
-        # Save the provinces with owners to the database
-        provinces_with_owners.each do |province|
-          province.save
+        shuffled_provinces.each_with_index do |slice, player_index|
+          player = players[player_index]
+          slice.each do |province|
+            province.player_id = player.id
+            province.owner = player.name
+            province.color = player.color
+            province.save
+          end
         end
 
         # Assign neighbouring provinces to provinces so that armies can move
         Hegemon::ProvinceUtils.set_nearby_provinces(@map.provinces)
-        format.json { render json: @map.nearby_provinces }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @map.errors, status: :unprocessable_entity }
