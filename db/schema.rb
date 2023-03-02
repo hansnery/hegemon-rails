@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_23_232900) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_01_222118) do
   create_table "maps", force: :cascade do |t|
     t.string "name"
     t.integer "min_players"
@@ -30,6 +30,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_23_232900) do
     t.index ["province_id"], name: "index_nearby_provinces_on_province_id"
   end
 
+  create_table "players", force: :cascade do |t|
+    t.string "name"
+    t.string "color"
+    t.integer "map_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["map_id"], name: "index_players_on_map_id"
+  end
+
   create_table "provinces", force: :cascade do |t|
     t.string "name"
     t.string "owner"
@@ -41,5 +50,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_23_232900) do
     t.index ["map_id"], name: "index_provinces_on_map_id"
   end
 
+  add_foreign_key "players", "maps"
   add_foreign_key "provinces", "maps"
 end

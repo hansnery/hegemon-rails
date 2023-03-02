@@ -4,10 +4,15 @@
 
 <div id="maps">
   <% @maps.each do |map| %>
-    <%= render map %>
-    <p>
-      <%= link_to "Show this map", map %>
-    </p>
+    <div>
+      <%= render map %>
+      <h3>
+        <%= map.name %>
+      </h3>
+      <p>
+        <%= link_to "Show this map", map %>
+      </p>
+    </div>
   <% end %>
 </div>
 

@@ -8,9 +8,6 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= javascript_include_tag 'https://code.jquery.com/jquery-3.6.0.min.js' %>
-    <%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js' %>
-    <%= stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css' %>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Nova+Square&display=swap" rel="stylesheet">
@@ -19,7 +16,4 @@
   <body>
     <%= yield %>
   </body>
-  <%= javascript_include_tag 'map_styles' %>
-  <%= javascript_include_tag 'map_labels' %>
-  <%= javascript_include_tag 'map' %>
 </html>

@@ -10,8 +10,13 @@ class MapsController < ApplicationController
 
   # GET /maps/1 or /maps/1.json
   def show
-    @provinces = @map.provinces.all.includes(:nearby_provinces)
-    @provinces_json = @provinces.to_json(include: :nearby_provinces)
+    @provinces = @map.provinces.all
+    @provinces_json = @map.provinces.all.to_json(include: :nearby_provinces)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @provinces_json }
+    end
   end
 
   # GET /maps/new
@@ -33,6 +38,14 @@ class MapsController < ApplicationController
 
     respond_to do |format|
       if @map.save
+        # Create player objects based on the number of players selected in the form
+        (1..@map.num_players).each do |i|
+          player = Player.new
+          player.name = params["player_#{i}"]
+          player.map_id = @map.id
+          player.save
+        end
+
         format.html { redirect_to map_url(@map), notice: "Map was successfully created." }
         format.json { render :show, status: :created, location: @map }
 

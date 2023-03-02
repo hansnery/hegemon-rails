@@ -67,18 +67,6 @@
   text-align: center;
 }
 
-.marchBtn {
-  border-color: white;
-  padding: 5px 10px;
-  margin: 5px;
-  cursor: pointer;
-  width: 150px;
-}
-
-.marchBtn:hover {
-  border-color: black;
-}
-
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {
   background-color: transparent;
   border: none;

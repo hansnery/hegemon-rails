@@ -42,8 +42,17 @@ $(document).ready(function() {
     label.setLatLng(adjustedLatLng);
   }
 
+  // Set global variables and constants
+  // const mapId = provinces[0].map_id;
+  var firstClickedProvince = 0;
+  var secondClickedProvince = 0;
+  var armyMarkerClicked = false;
+  const mapId = window.location.pathname.split('/')[2];
+
   // Variable to get the JSON element from the page and create the Ruby objects
-  var provinces = JSON.parse(document.getElementById("provinces-json").textContent);
+  let provinces_json = document.getElementById("provinces-json");
+  var provinces = JSON.parse(provinces_json.textContent);
+  provinces_json.remove(); // Removes provinces-json element from the view
 
   // Function to get the color from the Ruby object
   function getProvinceColor(name) {
@@ -79,6 +88,7 @@ $(document).ready(function() {
   }
 
   // Function to rename provinces and to get the name from the Ruby object
+  // Did this so that the GeoJSON remains unmodified
   function getProvinceName(name) {
     if (name === 'I') {
       return 'Roma';
@@ -125,14 +135,6 @@ $(document).ready(function() {
   function getProvince(name) {
     return provinces.find(province => province.name === name);
   }
-
-  var armyMarkerClicked = false;
-
-  const mapId = provinces[0].map_id;
-
-  // Reset selected provinces variables
-  var firstProvince = 0;
-  var secondProvince = 0;
 
   function bindProvinceOwnerTooltip(layer, feature) {
     var tooltipBound = false;
@@ -217,9 +219,22 @@ $(document).ready(function() {
               var nearbyProvinces = getProvinceNearbyProvinces(feature.properties.name);
 
               armyMarker.on('click', function(e) {
+                // First click
                 if(!armyMarkerClicked) {
+                  var popupContent = '<form><input type="number" id="num-armies" name="num-armies" value="1" min="1" max="' + getProvinceArmies(feature.properties.name) + '"></form>';
+
+                  var popupOptions = {
+                    maxWidth: 200,
+                    offset: [20, -20]
+                  };
+
+                  var popup = L.popup(popupOptions)
+                    .setLatLng(e.latlng)
+                    .setContent(popupContent)
+                    .openOn(map);
+
                   armyMarkerClicked = true;
-                  firstProvince = getProvince(feature.properties.name);
+                  firstClickedProvince = getProvince(feature.properties.name);
                   // Highlight the neighbouring provinces
                   provincesLayer.setStyle(function(feature) {
                     if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
@@ -229,11 +244,11 @@ $(document).ready(function() {
                       };
                     }
                   });
-                } else {
-                  secondProvince = getProvince(feature.properties.name);
+                } else { // Second click
+                  secondClickedProvince = getProvince(feature.properties.name);
                   armyMarkerClicked = false;
                   // Make POST request to Rails backend
-                  fetch('/maps/' + mapId + '/' + firstProvince.id + '/marches_to/' + secondProvince.id)
+                  fetch('/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id)
                     .then(response => {
                       if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -250,6 +265,11 @@ $(document).ready(function() {
                       // Loop through the armyNumbers and update their innerHTML
                       for (var i = 0; i < armyNumbers.length; i++) {
                         armyNumbers[i].innerHTML = data[i].armies;
+                      }
+
+                      // Loop through the provinces and update their armies
+                      for (var i = 0; i < provinces.length; i++) {
+                        provinces[i].armies = data[i].armies;
                       }
                     })
                     .catch(error => {

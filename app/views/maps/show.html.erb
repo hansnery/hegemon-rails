@@ -16,23 +16,33 @@
   <%= raw @provinces_json %>
 </script>
 
-<h1>Comparing armies for <%= @map.name %></h1>
+<%
+=begin%>
+ <h1>Comparing armies for <%= @map.name %></h1>
 
 <table>
-<thead>
-  <tr>
-    <th>Province</th>
-    <th>Armies</th>
-  </tr>
-</thead>
-<tbody>
-  <% @provinces.each do |province| %>
+  <thead>
     <tr>
-      <td><%= province.id %></td>
-      <td><%= province.name %></td>
-      <td><%= province.armies %></td>
+      <th>Province</th>
+      <th>Armies</th>
     </tr>
-  <% end %>
-</tbody>
+  </thead>
+  <tbody>
+    <% @provinces.each do |province| %>
+      <tr>
+        <td><%= province.id %></td>
+        <td><%= province.name %></td>
+        <td><%= province.armies %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
+<%
+=end%>
+<%= javascript_include_tag 'https://code.jquery.com/jquery-3.6.0.min.js' %>
+<%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js' %>
+<%= stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css' %>
+<%= javascript_include_tag 'map_styles' %>
+<%= javascript_include_tag 'map_labels' %>
+<%= javascript_include_tag 'map' %>
