@@ -137,6 +137,14 @@ $(document).ready(function() {
       }
     });
   }
+  function restoreProvincesColors(layer, feature) {
+    layer.setStyle(function(feature) {
+      return {
+        color: getProvinceColor(feature.properties.name),
+        fillOpacity: 0.5
+      };
+    });
+  }
 
   // Declare a new layerGroup for armyMarker
   var armyLayer = L.layerGroup();
@@ -203,8 +211,9 @@ $(document).ready(function() {
 
               armyMarker.on('click', function(e) {
                 // First click
-                if(!armyMarkerClicked) {
-                  var popupContent = '<div class="popup-slider-container"><label for="num-armies-slider">' + 1 + '</label><input type="range" id="num-armies-slider" name="num-armies-slider" value="' + getProvinceArmies(feature.properties.name) + '" min="1" max="' + getProvinceArmies(feature.properties.name) + '"><span>' + getProvinceArmies(feature.properties.name) + '</span></div>';
+                var availableArmies = (getProvinceArmies(feature.properties.name) - 1)
+                if(!armyMarkerClicked && availableArmies > 1) {
+                  var popupContent = '<div class="popup-slider-container"><label for="num-armies-slider">' + 1 + '</label><input type="range" id="num-armies-slider" name="num-armies-slider" value="' + availableArmies + '" min="1" max="' + availableArmies + '"><span>' + availableArmies + '</span></div>';
 
                   var popupOptions = {
                     maxWidth: 130,
@@ -216,7 +225,7 @@ $(document).ready(function() {
                     .setContent(popupContent)
                     .openOn(map);
 
-                    armyMarkerClicked = true;
+                  armyMarkerClicked = true;
                   firstClickedProvince = getProvince(feature.properties.name);
                   // Highlight the neighbouring provinces
                   provincesLayer.setStyle(function(feature) {
@@ -244,7 +253,6 @@ $(document).ready(function() {
                     })
                     .then(data => {
                       console.log('Success!', data);
-                      // location.reload();
 
                       // Select all elements with class "army-number"
                       var armyNumbers = document.querySelectorAll('.army-number');
@@ -263,13 +271,13 @@ $(document).ready(function() {
                       console.error('Error:', error);
                     });
                   // Restore the default colors of the neighbouring provinces
-                  provincesLayer.setStyle(function(feature) {
-                    return {
-                      color: getProvinceColor(feature.properties.name),
-                      fillOpacity: 0.5
-                    };
-                  });
+                  restoreProvincesColors(provincesLayer, feature);
                 }
+              });
+              map.on('click', function(e) {
+                armyMarkerClicked = false;
+                // Restore the default colors of the neighbouring provinces
+                restoreProvincesColors(provincesLayer, feature);
               });
             }
           }
