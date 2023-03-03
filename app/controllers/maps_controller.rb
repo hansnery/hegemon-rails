@@ -61,7 +61,7 @@ class MapsController < ApplicationController
           province.name = feature['properties']['name']
           # province.geometry = feature['geometry']['coordinates']
           province.map_id = @map.id
-          province.armies = 1
+          province.armies = 5
           province.save
         end
 
@@ -116,10 +116,11 @@ class MapsController < ApplicationController
     @map = Map.find(params[:id])
     @province_1 = Province.find(params[:province_1_id])
     @province_2 = Province.find(params[:province_2_id])
+    @num_armies = (params[:num_armies]).to_i
 
     if @province_1.owner == @province_2.owner && @province_1 != @province_2
-      @province_2.armies += @province_1.armies - 1
-      @province_1.armies -= @province_1.armies - 1
+      @province_2.armies += @num_armies
+      @province_1.armies -= @num_armies
     end
 
     @province_1.save

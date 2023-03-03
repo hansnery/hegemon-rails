@@ -204,11 +204,11 @@ $(document).ready(function() {
               armyMarker.on('click', function(e) {
                 // First click
                 if(!armyMarkerClicked) {
-                  var popupContent = '<form><input type="number" id="num-armies" name="num-armies" value="1" min="1" max="' + getProvinceArmies(feature.properties.name) + '"></form>';
+                  var popupContent = '<div class="popup-slider-container"><label for="num-armies-slider">' + 1 + '</label><input type="range" id="num-armies-slider" name="num-armies-slider" value="' + getProvinceArmies(feature.properties.name) + '" min="1" max="' + getProvinceArmies(feature.properties.name) + '"><span>' + getProvinceArmies(feature.properties.name) + '</span></div>';
 
                   var popupOptions = {
-                    maxWidth: 200,
-                    offset: [20, -20]
+                    maxWidth: 130,
+                    offset: [10, -20]
                   };
 
                   var popup = L.popup(popupOptions)
@@ -216,7 +216,7 @@ $(document).ready(function() {
                     .setContent(popupContent)
                     .openOn(map);
 
-                  armyMarkerClicked = true;
+                    armyMarkerClicked = true;
                   firstClickedProvince = getProvince(feature.properties.name);
                   // Highlight the neighbouring provinces
                   provincesLayer.setStyle(function(feature) {
@@ -227,11 +227,15 @@ $(document).ready(function() {
                       };
                     }
                   });
-                } else { // Second click
+                } else if (armyMarkerClicked) { // Second click
+                  var armiesSlider = document.getElementById('num-armies-slider');
+                  var selectedArmies = armiesSlider.value;
+                  console.log('Number of armies selected:', selectedArmies);
+
                   secondClickedProvince = getProvince(feature.properties.name);
                   armyMarkerClicked = false;
                   // Make POST request to Rails backend
-                  fetch('/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id)
+                  fetch('/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
                     .then(response => {
                       if (!response.ok) {
                         throw new Error('Network response was not ok');

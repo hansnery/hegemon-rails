@@ -67,8 +67,41 @@
   text-align: center;
 }
 
-.leaflet-popup-content-wrapper, .leaflet-popup-tip {
-  background-color: transparent;
-  border: none;
-  box-shadow: none !important;
+.leaflet-popup-content-wrapper {
+  border-radius: 0px !important;
+}
+
+.leaflet-popup-tip {
+  display: none;
+}
+
+.armies-tooltip {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.popup-slider-container {
+  display: flex;
+  position: relative;
+  top: 5px;
+  right: 3px;
+}
+
+.popup-slider-container label {
+  justify-content: flex-start;
+  font-size: 20px;
+}
+
+.popup-slider-container input[type="range"] {
+  flex-grow: 1;
+}
+
+.popup-slider-container span {
+  justify-content: flex-end;
+  font-size: 20px;
+}
+
+.popup-slider-container input[type="range"] {
+  width: 100px;
+  height: 20px;
 }
