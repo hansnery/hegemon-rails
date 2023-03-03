@@ -117,12 +117,9 @@ class MapsController < ApplicationController
     @province_1 = Province.find(params[:province_1_id])
     @province_2 = Province.find(params[:province_2_id])
 
-    if @province_1.owner == @province_2.owner
-      @province_1.armies -= 1
-      @province_2.armies += 1
-      # @result = "Marched one army from Province 1 to Province 22."
-    else
-      # @result = "It would require an attack."
+    if @province_1.owner == @province_2.owner && @province_1 != @province_2
+      @province_2.armies += @province_1.armies - 1
+      @province_1.armies -= @province_1.armies - 1
     end
 
     @province_1.save

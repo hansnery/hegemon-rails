@@ -126,7 +126,7 @@ $(document).ready(function() {
     layer.on('click', function(e) {
       if (!tooltipBound) { // bind tooltip only if it hasn't already been bound
         var provinceOwner = getProvinceOwner(feature.properties.name)
-        layer.bindTooltip('<div class="province-title">' + feature.properties.name + '</div><div class="province-desc"><hr>Owned by ' + provinceOwner + '</div>').openTooltip();
+        layer.bindTooltip('<div class="province-title">' + getProvinceName(feature.properties.name) + '</div><div class="province-desc"><hr>Owned by ' + provinceOwner + '</div>').openTooltip();
         tooltipBound = true;
       }
     });
