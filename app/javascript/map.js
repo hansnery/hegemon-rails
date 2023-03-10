@@ -147,6 +147,27 @@ $(document).ready(function() {
     });
   }
 
+  function writeProvinceName(layer, feature) {
+    var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
+    var label = L.marker(layer.getBounds().getCenter(), {
+      icon: L.divIcon({
+        className: 'label-icon',
+        html: labelContent,
+        iconSize: null
+      })
+    }).addTo(map);
+
+    // Set labels
+    setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
+    map.on('zoomend', function() {
+      setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
+      label.getElement().style.fontSize = getFontSize(map.getZoom());
+    });
+
+    // Set the initial font size to 8px
+    label.getElement().style.fontSize = '8px';
+  }
+
   function handleArmyMovement(feature, e, provincesLayer, nearbyProvinces) {
     // First click
     var availableArmies = (getProvinceArmies(feature.properties.name) - 1)
@@ -236,25 +257,8 @@ $(document).ready(function() {
 
             // Ensure that a label is only added to a province if that province has a "name" property in its GeoJSON data.
             if (feature.properties && feature.properties.name) {
-              // Province marker
-              var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
-              var label = L.marker(layer.getBounds().getCenter(), {
-                icon: L.divIcon({
-                  className: 'label-icon',
-                  html: labelContent,
-                  iconSize: null
-                })
-              }).addTo(map);
-
-              // Set labels
-              setLabelPosition(label, layer.getBounds().getCenter(), getProvinceName(feature.properties.name), offsets);
-              map.on('zoomend', function() {
-                setLabelPosition(label, layer.getBounds().getCenter(),getProvinceName(feature.properties.name), offsets);
-                label.getElement().style.fontSize = getFontSize(map.getZoom());
-              });
-
-              // Set the initial font size to 8px
-              label.getElement().style.fontSize = '8px';
+              // Province label
+              writeProvinceName(layer, feature)
 
               // Add marker to represent armies
               var armyIcon = L.divIcon({
