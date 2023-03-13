@@ -158,6 +158,7 @@ class MapsController < ApplicationController
             end
           else
             @province_1.armies -= 1
+            @num_armies -= 1
             puts "\n"
             puts "*********************************************************************************"
             puts "#{@province_2.owner} defeats 1 army of #{@province_1.owner}"
