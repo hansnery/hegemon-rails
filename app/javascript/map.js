@@ -42,11 +42,7 @@ $(document).ready(function() {
     label.setLatLng(adjustedLatLng);
   }
 
-  // Set global variables and constants
-  // const mapId = provinces[0].map_id;
-  var firstClickedProvince = 0;
-  var secondClickedProvince = 0;
-  var armyMarkerClicked = false;
+  // Set constants
   const mapId = window.location.pathname.split('/')[2];
 
   // Variable to get the JSON element from the page and create the Ruby objects
@@ -147,7 +143,7 @@ $(document).ready(function() {
     });
   }
 
-  function writeProvinceName(layer, feature) {
+  function addProvinceLabel(layer, feature) {
     var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
     var label = L.marker(layer.getBounds().getCenter(), {
       icon: L.divIcon({
@@ -167,6 +163,11 @@ $(document).ready(function() {
     // Set the initial font size to 8px
     label.getElement().style.fontSize = '8px';
   }
+
+  // Set global variables
+  var firstClickedProvince;
+  var secondClickedProvince;
+  var armyMarkerClicked = false;
 
   function handleArmyMovement(feature, e, provincesLayer, nearbyProvinces) {
     // First click
@@ -234,8 +235,16 @@ $(document).ready(function() {
     }
   }
 
-  // Declare a new layerGroup for armyMarker
-  var armyLayer = L.layerGroup();
+  function addArmyMarkerToMap(armyMarker, map) {
+    // Declare a new layerGroup for armyMarker
+    var armyLayer = L.layerGroup();
+
+    // Add armyMarker to the layerGroup
+    armyLayer.addLayer(armyMarker);
+
+    // Add the layerGroup to the map
+    armyLayer.addTo(map);
+  }
 
   function drawMap() {
     $.ajax({
@@ -252,40 +261,38 @@ $(document).ready(function() {
           },
           // On each province do the following
           onEachFeature: function(feature, layer) {
-            // Tooltip showing owner of province but only when clicked
+            // Bind tooltip showing owner of province but only when clicked
             bindProvinceOwnerTooltip(layer, feature);
 
             // Ensure that a label is only added to a province if that province has a "name" property in its GeoJSON data.
             if (feature.properties && feature.properties.name) {
               // Province label
-              writeProvinceName(layer, feature)
+              addProvinceLabel(layer, feature);
 
-              // Add marker to represent armies
-              var armyIcon = L.divIcon({
-                className: 'army-marker',
-                html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">' + getProvinceArmies(feature.properties.name) + '</div>',
-                iconSize: [45, 28],
-                iconAnchor: [15, 35]
-              });
+              // Create marker
               var armyMarker = L.marker(layer.getBounds().getCenter(), {
-                icon: armyIcon
-              })
+                icon: L.divIcon({
+                  className: 'army-marker',
+                  html: '<img class="army-icon" src="https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png"/><div class="army-number" style="position:absolute; top: 32px; left:22px;">' + getProvinceArmies(feature.properties.name) + '</div>',
+                  iconSize: [45, 28],
+                  iconAnchor: [15, 35]
+                })
+              });
 
-              // Add armyMarker to the layerGroup
-              armyLayer.addLayer(armyMarker);
-
-              // Add the layerGroup to the map
-              armyLayer.addTo(map);
+              // Add army marker to the map
+              addArmyMarkerToMap(armyMarker, map);
 
               // Get nearby provinces
               var nearbyProvinces = getProvinceNearbyProvinces(feature.properties.name);
 
+              // When armyMarker is clicked highlight nearby provinces and handles army movements
               armyMarker.on('click', function(e) {
                 handleArmyMovement(feature, e, provincesLayer, nearbyProvinces);
               });
+
+              // If map is clicked cancels army movements and restore provinces colors
               map.on('click', function(e) {
                 armyMarkerClicked = false;
-                // Restore the default colors of the neighbouring provinces
                 restoreProvincesColors(provincesLayer, feature);
               });
             }
@@ -295,6 +302,5 @@ $(document).ready(function() {
     });
   }
 
-  // Map
   drawMap();
 });
