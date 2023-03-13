@@ -137,7 +137,9 @@ $(document).ready(function() {
   function restoreProvincesColors(layer, feature) {
     layer.setStyle(function(feature) {
       return {
-        color: getProvinceColor(feature.properties.name),
+        fillColor: getProvinceColor(feature.properties.name),
+        color: 'black',
+        weight: 1,
         fillOpacity: 0.5
       };
     });
@@ -171,22 +173,25 @@ $(document).ready(function() {
 
   function handleArmyMovement(feature, e, provincesLayer, nearbyProvinces) {
     // First click
-    var availableArmies = (getProvinceArmies(feature.properties.name) - 1)
-    if(!armyMarkerClicked && availableArmies > 1) {
-      var popupContent = '<div class="popup-slider-container"><label for="num-armies-slider">' + 1 + '</label><input type="range" id="num-armies-slider" name="num-armies-slider" value="' + availableArmies + '" min="1" max="' + availableArmies + '"><span>' + availableArmies + '</span></div>';
+    var availableArmies = (getProvinceArmies(feature.properties.name) - 1);
+    // console.log('Available armies:', availableArmies);
 
-      var popupOptions = {
-        maxWidth: 130,
-        offset: [10, -20]
-      };
-
-      var popup = L.popup(popupOptions)
-        .setLatLng(e.latlng)
-        .setContent(popupContent)
-        .openOn(map);
+    if(!armyMarkerClicked && availableArmies > 0) {
+      if(availableArmies > 1) {
+        var popupContent = '<div class="popup-slider-container"><label for="num-armies-slider">' + 1 + '</label><input type="range" id="num-armies-slider" name="num-armies-slider" value="' + availableArmies + '" min="1" max="' + availableArmies + '"><span>' + availableArmies + '</span></div>';
+        var popupOptions = {
+          maxWidth: 130,
+          offset: [10, -20]
+        };
+        var popup = L.popup(popupOptions)
+          .setLatLng(e.latlng)
+          .setContent(popupContent)
+          .openOn(map);
+      }
 
       armyMarkerClicked = true;
       firstClickedProvince = getProvince(feature.properties.name);
+
       // Highlight the neighbouring provinces
       provincesLayer.setStyle(function(feature) {
         if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
@@ -198,11 +203,13 @@ $(document).ready(function() {
       });
     } else if (armyMarkerClicked) { // Second click
       var armiesSlider = document.getElementById('num-armies-slider');
-      var selectedArmies = armiesSlider.value;
-      console.log('Number of armies selected:', selectedArmies);
+      var selectedArmies = armiesSlider ? armiesSlider.value : 1;
+
+      // console.log('Number of armies selected:', selectedArmies);
 
       secondClickedProvince = getProvince(feature.properties.name);
       armyMarkerClicked = false;
+
       // Make POST request to Rails backend
       fetch('/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
         .then(response => {
@@ -222,15 +229,18 @@ $(document).ready(function() {
             armyNumbers[i].innerHTML = data[i].armies;
           }
 
-          // Loop through the provinces and update their armies
+          // Loop through the provinces and update them
           for (var i = 0; i < provinces.length; i++) {
+            provinces[i].owner = data[i].owner;
             provinces[i].armies = data[i].armies;
+            provinces[i].color = data[i].color;
           }
+          restoreProvincesColors(provincesLayer);
         })
         .catch(error => {
           console.error('Error:', error);
         });
-      // Restore the default colors of the neighbouring provinces
+
       restoreProvincesColors(provincesLayer, feature);
     }
   }
@@ -255,7 +265,9 @@ $(document).ready(function() {
           // Color province
           style: function(feature) {
             return {
-              color: getProvinceColor(feature.properties.name),
+              fillColor: getProvinceColor(feature.properties.name),
+              color: 'black',
+              weight: 1,
               fillOpacity: 0.5
             };
           },
@@ -293,8 +305,13 @@ $(document).ready(function() {
               // If map is clicked cancels army movements and restore provinces colors
               map.on('click', function(e) {
                 armyMarkerClicked = false;
-                restoreProvincesColors(provincesLayer, feature);
               });
+
+              // $(document).on('click', function(e) {
+              //   if (!armyMarkerClicked) {
+              //     restoreProvincesColors(provincesLayer);
+              //   }
+              // });
             }
           }
         }).addTo(map);
