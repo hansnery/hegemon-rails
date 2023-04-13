@@ -30,18 +30,19 @@ class MapsController < ApplicationController
 
   # POST /maps or /maps.json
   def create
+    puts "Params: #{params.inspect}"
     @map = Map.new(map_params)
-
+    puts "Map params: #{map_params.inspect}"
+    # @map.max_players = map_parameters
     @map.name = "Roman Empire"
     @map.min_players = 2
     @map.num_players = @map.max_players
-
     respond_to do |format|
       if @map.save
         # Create player objects based on the number of players selected in the form
-        (1..@map.num_players).each do |i|
+        player_parameters.each do |i|
           player = Player.new
-          player.name = params["player_#{i}"]
+          player.name = params["player_#{i + 1}"]
           player.map_id = @map.id
           player.color = "#" + SecureRandom.hex(3)
           player.save
@@ -195,7 +196,7 @@ class MapsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def map_params
-      params.require(:map).permit(:name, :min_players, :max_players, :num_players)
+      params.require(:map).permit(:min_players, :max_players, :num_players)
     end
 
     # Rolls a 6 sided die a number of times and store in an array

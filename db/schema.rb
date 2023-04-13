@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_01_222118) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_30_152649) do
+  create_table "games", force: :cascade do |t|
+    t.string "name"
+    t.boolean "private"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "maps", force: :cascade do |t|
     t.string "name"
     t.integer "min_players"
@@ -18,6 +25,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_01_222118) do
     t.integer "num_players"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "game_id", null: false
+    t.index ["game_id"], name: "index_maps_on_game_id"
   end
 
   create_table "nearby_provinces", id: false, force: :cascade do |t|
@@ -53,6 +62,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_01_222118) do
     t.index ["player_id"], name: "index_provinces_on_player_id"
   end
 
+  add_foreign_key "maps", "games"
   add_foreign_key "players", "maps"
   add_foreign_key "provinces", "maps"
   add_foreign_key "provinces", "players"
