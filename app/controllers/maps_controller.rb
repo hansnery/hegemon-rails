@@ -30,64 +30,6 @@ class MapsController < ApplicationController
 
   # POST /maps or /maps.json
   def create
-    puts "Params: #{params.inspect}"
-    @map = Map.new(map_params)
-    puts "Map params: #{map_params.inspect}"
-    # @map.max_players = map_parameters
-    @map.name = "Roman Empire"
-    @map.min_players = 2
-    @map.num_players = @map.max_players
-    respond_to do |format|
-      if @map.save
-        # Create player objects based on the number of players selected in the form
-        player_parameters.each do |i|
-          player = Player.new
-          player.name = params["player_#{i + 1}"]
-          player.map_id = @map.id
-          player.color = "#" + SecureRandom.hex(3)
-          player.save
-        end
-
-        format.html { redirect_to map_url(@map), notice: "Map was successfully created." }
-        format.json { render :show, status: :created, location: @map }
-
-        # Load and parse GeoJSON local file
-        file_path = Rails.root.join('provinces.geojson')
-        file_contents = File.read(file_path)
-        data = JSON.parse(file_contents)
-
-        # Loop through the FeatureCollection to create Ruby objects from it
-        data['features'].map do |feature|
-          province = Province.new
-          province.name = feature['properties']['name']
-          # province.geometry = feature['geometry']['coordinates']
-          province.map_id = @map.id
-          province.armies = 5
-          province.save
-        end
-
-        # Divide the territories equally among the number of players
-        provinces = @map.provinces
-        players = @map.players.to_a
-        shuffled_provinces = provinces.shuffle.each_slice((provinces.size.to_f / players.size).ceil)
-
-        shuffled_provinces.each_with_index do |slice, player_index|
-          player = players[player_index]
-          slice.each do |province|
-            province.player_id = player.id
-            province.owner = player.name
-            province.color = player.color
-            province.save
-          end
-        end
-
-        # Assign neighbouring provinces to provinces so that armies can move
-        Hegemon::ProvinceUtils.set_nearby_provinces(@map.provinces)
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @map.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # PATCH/PUT /maps/1 or /maps/1.json
