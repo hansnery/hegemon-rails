@@ -43,7 +43,8 @@ $(document).ready(function() {
   }
 
   // Set constants
-  const mapId = window.location.pathname.split('/')[2];
+  const gameId = window.location.pathname.split('/')[2];
+  const mapId = window.location.pathname.split('/')[4];
 
   // Variable to get the JSON element from the page and create the Ruby objects
   let provinces_json = document.getElementById("provinces-json");
@@ -211,7 +212,7 @@ $(document).ready(function() {
       armyMarkerClicked = false;
 
       // Make POST request to Rails backend
-      fetch('/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
+      fetch('/games/' + gameId + '/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');

@@ -1,7 +1,7 @@
 require 'hegemon/province_utils'
 
 class MapsController < ApplicationController
-  before_action :set_map, only: %i[ show edit update destroy ]
+  before_action :set_map_and_game, only: %i[ show edit update destroy ]
 
   # GET /maps or /maps.json
   def index
@@ -132,8 +132,9 @@ class MapsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_map
+    def set_map_and_game
       @map = Map.find(params[:id])
+      @game = Game.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
