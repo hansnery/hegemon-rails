@@ -105,14 +105,10 @@ class GamesController < ApplicationController
     end
 
     def create_provinces
-      # Cache GeoJSON file contents
-      data = Rails.cache.fetch('provinces_geojson') do
-        file_path = Rails.root.join('provinces.geojson')
-        File.read(file_path)
-      end
-
-      # Parse GeoJSON data
-      data = JSON.parse(data)
+      # Load and parse GeoJSON local file
+      file_path = Rails.root.join('provinces.geojson')
+      file_contents = File.read(file_path)
+      data = JSON.parse(file_contents)
 
       # Create provinces in bulk
       provinces_params = data['features'].map do |feature|
@@ -131,9 +127,8 @@ class GamesController < ApplicationController
           province.player_id = player.id
           province.owner = player.name
           province.color = player.color
+          province.save
         end
-        province_ids = Province.where(player_id: player.id).pluck(:id)
-        Province.where(id: province_ids).update_all(color: player.color)
       end
 
       # Assign neighbouring provinces to provinces so that armies can move
