@@ -97,35 +97,28 @@ class GamesController < ApplicationController
       players_params = []
       params.each do |key, value|
         if key.start_with?("player_")
-          players_params << value
+          players_params << { name: value, map_id: @map.id, color: "#" + SecureRandom.hex(3) }
         end
       end
 
-      # Create player objects based on the number of players selected in the form
-      players_params.each do |player_name|
-        player = Player.new
-        player.name = player_name
-        player.map_id = @map.id
-        player.color = "#" + SecureRandom.hex(3)
-        player.save
-      end
+      Player.insert_all(players_params)
     end
 
     def create_provinces
-      # Load and parse GeoJSON local file
-      file_path = Rails.root.join('provinces.geojson')
-      file_contents = File.read(file_path)
-      data = JSON.parse(file_contents)
-
-      # Loop through the FeatureCollection to create Ruby objects from it
-      data['features'].map do |feature|
-        province = Province.new
-        province.name = feature['properties']['name']
-        # province.geometry = feature['geometry']['coordinates']
-        province.map_id = @map.id
-        province.armies = 5
-        province.save
+      # Cache GeoJSON file contents
+      data = Rails.cache.fetch('provinces_geojson') do
+        file_path = Rails.root.join('provinces.geojson')
+        File.read(file_path)
       end
+
+      # Parse GeoJSON data
+      data = JSON.parse(data)
+
+      # Create provinces in bulk
+      provinces_params = data['features'].map do |feature|
+        { name: feature['properties']['name'], map_id: @map.id, armies: 5 }
+      end
+      Province.insert_all(provinces_params)
 
       # Divide the territories equally among the number of players
       provinces = @map.provinces
@@ -138,8 +131,9 @@ class GamesController < ApplicationController
           province.player_id = player.id
           province.owner = player.name
           province.color = player.color
-          province.save
         end
+        province_ids = Province.where(player_id: player.id).pluck(:id)
+        Province.where(id: province_ids).update_all(color: player.color)
       end
 
       # Assign neighbouring provinces to provinces so that armies can move
