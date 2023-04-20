@@ -1,14 +1,170 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Games</h1>
+<div class="columns">
+  <div class="column"></div>
+  <div class="column">
+    <section class="container mt-6 pt-6">
+      <div class="columns is-multiline">
+        <div class="column">
+          <div class="columns">
+            <div class="column left m-4">
+              <h1 class="title is-3">Sattelite War Games</h1>
+              <h2 class="subtitle is-4">Fight against other players in real world, satellite-based maps!</h2>
+              <p class="subtitle is-7">Choose classic boardgame-style maps or upload your own GeoJSON file and play on your custom map.</p>
+            </div>
+            <div class="column right has-text-centered box mx-6 px-6">
+              <h1 class="title is-4 my-2">Join the fight</h1>
+              <p class="description mb-2">Log in.</p>
+              <br/>
+              <div class="pb-4">
+                <div class="field">
+                  <label class="label has-text-left">Email</label>
+                  <div class="control">
+                    <input class="input is-medium" type="email" placeholder="e.g: johndoe@doe.com">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label has-text-left">Password</label>
+                  <div class="control">
+                    <input class="input is-medium" type="password" placeholder="********">
+                  </div>
+                </div>
+                <button class="button is-block is-info is-fullwidth is-medium">Submit</button>
+                <br/>
+                <small><em>Does not have an account yet?</em></small>
+                <br/>
+                <small><strong><u>Create one here.</u></strong></small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column is-8 is-offset-2">
+          <br>
+          <nav class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <span class="icon">
+                  <i class="fab fa-twitter"></i>
+                </span> &emsp;
+                <span class="icon">
+                  <i class="fab fa-facebook"></i>
+                </span> &emsp;
+                <span class="icon">
+                  <i class="fab fa-instagram"></i>
+                </span> &emsp;
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span> &emsp;
+                <span class="icon">
+                  <i class="fas fa-envelope"></i>
+                </span>
+              </div>
+            </div>
+            <div class="level-right">
+              <small class="level-item" style="color: var(--textLight)">
+                &copy; Super Cool Website. All Rights Reserved.
+              </small>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </section>
 
-<div id="games">
-  <% @games.each do |game| %>
-    <%= render game %>
-    <p>
-      <%= link_to "Show this game", game %>
-    </p>
-  <% end %>
+    <section class="hero is-fullheight is-default is-bold">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="columns is-vcentered">
+                    <div class="column is-5">
+                        <figure class="image is-4by3">
+                            <img src="https://picsum.photos/800/600/?random" alt="Description">
+                        </figure>
+                    </div>
+                    <div class="column is-6 is-offset-1">
+                        <h1 class="title is-3">
+                          Sattelite War Games
+                        </h1>
+                        <h2 class="subtitle is-4">
+                          Fight against other players in real world, satellite-based maps!
+                        </h2>
+                        <h3 class="subtitle is-7">
+                          Choose classic boardgame-style maps or upload your own GeoJSON file and play on your custom map.
+                        </h3>
+                        <br>
+                        <p class="has-text-centered">
+                            <a class="button is-medium is-info is-outlined">
+                                Learn more
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-foot">
+            <div class="container">
+                <div class="tabs is-centered">
+                    <ul>
+                        <li><a>And this is the bottom</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero is-large is-info">
+      <div class="columns">
+        <div class="column is-9">
+          <div class="hero-body">
+            <p class="title">
+              Games
+            </p>
+            <p class="subtitle">
+              Large subtitle
+            </p>
+          </div>
+        </div>
+        <div class="column is-centered">
+          <%= link_to "New game", new_game_path, class: "button is-primary is-large is-flex is-align-items-center" %>
+        </div>
+      </div>
+    </section>
+    <div class="box">
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <h1 class="title">Games</h1>
+            <br>
+            <div id="games">
+              <% @games.each do |game| %>
+                <%= render game %>
+                <p>
+                  <%= link_to "Show this game", game %>
+                </p>
+              <% end %>
+            </div>
+          </p>
+        </div>
+        <nav class="level is-mobile">
+          <div class="level-left">
+            <a class="level-item" aria-label="reply">
+              <span class="icon is-small">
+                <i class="fas fa-reply" aria-hidden="true"></i>
+              </span>
+            </a>
+            <a class="level-item" aria-label="retweet">
+              <span class="icon is-small">
+                <i class="fas fa-retweet" aria-hidden="true"></i>
+              </span>
+            </a>
+            <a class="level-item" aria-label="like">
+              <span class="icon is-small">
+                <i class="fas fa-heart" aria-hidden="true"></i>
+              </span>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <div class="column"></div>
 </div>
-
-<%= link_to "New game", new_game_path %>

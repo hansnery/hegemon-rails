@@ -147,7 +147,7 @@ $(document).ready(function() {
   }
 
   function addProvinceLabel(layer, feature) {
-    var labelContent = '<div class="label">' + getProvinceName(feature.properties.name) + '</div>';
+    var labelContent = '<div class="leaflet-label">' + getProvinceName(feature.properties.name) + '</div>';
     var label = L.marker(layer.getBounds().getCenter(), {
       icon: L.divIcon({
         className: 'label-icon',
