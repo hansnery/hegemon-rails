@@ -123,7 +123,7 @@ $(document).ready(function() {
     layer.on('click', function(e) {
       if (!tooltipBound) { // bind tooltip only if it hasn't already been bound
         var provinceOwner = getProvinceOwner(feature.properties.name)
-        layer.bindTooltip('<div class="province-title">' + getProvinceName(feature.properties.name) + '</div><div class="province-desc"><hr>Owned by ' + provinceOwner + '</div>').openTooltip();
+        layer.bindTooltip('<div class="province-title">' + getProvinceName(feature.properties.name) + '</div><div class="province-desc"><hr class="my-0">Owned by ' + provinceOwner + '</div>').openTooltip();
         tooltipBound = true;
       }
     });
@@ -282,7 +282,7 @@ $(document).ready(function() {
               // Province label
               addProvinceLabel(layer, feature);
 
-              // Create marker
+              // Create army marker
               var armyMarker = L.marker(layer.getBounds().getCenter(), {
                 icon: L.divIcon({
                   className: 'army-marker',
@@ -307,12 +307,6 @@ $(document).ready(function() {
               map.on('click', function(e) {
                 armyMarkerClicked = false;
               });
-
-              // $(document).on('click', function(e) {
-              //   if (!armyMarkerClicked) {
-              //     restoreProvincesColors(provincesLayer);
-              //   }
-              // });
             }
           }
         }).addTo(map);

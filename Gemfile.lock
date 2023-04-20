@@ -72,6 +72,8 @@ GEM
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    bulma-rails (0.9.4)
+      sassc (~> 2.0)
     capybara (3.38.0)
       addressable
       matrix
@@ -88,6 +90,7 @@ GEM
       irb (>= 1.5.0)
       reline (>= 0.3.1)
     erubi (1.12.0)
+    ffi (1.15.5)
     globalid (1.1.0)
       activesupport (>= 5.0)
     i18n (1.12.0)
@@ -170,6 +173,8 @@ GEM
     rgeo-geojson (2.1.1)
       rgeo (>= 1.0.0)
     rubyzip (2.3.2)
+    sassc (2.4.0)
+      ffi (~> 1.9)
     selenium-webdriver (4.8.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -214,6 +219,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  bulma-rails
   capybara
   debug
   importmap-rails
@@ -223,6 +229,7 @@ DEPENDENCIES
   redis (~> 4.0)
   rgeo
   rgeo-geojson
+  sassc (~> 2.4.0)
   selenium-webdriver
   sprockets-rails
   sqlite3 (~> 1.4)
