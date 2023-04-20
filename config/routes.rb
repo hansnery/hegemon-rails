@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  resources :players
   resources :games do
-    resources :maps
+    resources :maps do
+      resources :players
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
