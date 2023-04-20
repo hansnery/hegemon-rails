@@ -14,6 +14,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_152649) do
   create_table "games", force: :cascade do |t|
     t.string "name"
     t.boolean "private"
+    t.integer "player_turn"
+    t.integer "turns_played"
+    t.string "phase", default: "mustering"
+    t.boolean "finished"
+    t.integer "winner"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

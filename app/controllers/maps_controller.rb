@@ -133,8 +133,11 @@ class MapsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_map_and_game
+      puts "---------------------------------------------------------------------------------------------------------------------------------------------------"
+      puts params
+      puts "---------------------------------------------------------------------------------------------------------------------------------------------------"
+      @game = Game.find(params[:game_id])
       @map = Map.find(params[:id])
-      @game = Game.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

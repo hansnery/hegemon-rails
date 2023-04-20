@@ -2,7 +2,7 @@
 
 <%= render @game %>
 
-<%= button_to "Play", game_map_path(@game.map.id), method: :get %>
+<%= button_to "Play", game_map_path(@game, @game.map), method: :get %>
 
 <div>
   <%= link_to "Edit this game", edit_game_path(@game) %> |

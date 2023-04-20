@@ -97,7 +97,6 @@ class GamesController < ApplicationController
       players_params = []
       params.each do |key, value|
         if key.start_with?("player_")
-          player_name = value
           players_params << value
         end
       end

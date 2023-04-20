@@ -23,7 +23,13 @@
     <%= form.check_box :private %>
   </div>
 
-  <%= form.fields_for :map, @game.build_map do |map_fields| %>
-    <%= render partial: "maps/form", locals: { map: @map } %>
+  <% if game.new_record? %>
+    <%= form.fields_for :map, @game.build_map do |map_fields| %>
+      <%= render partial: "maps/form", locals: { map: @map } %>
+    <% end %>
+  <% else %>
+    <div>
+      <%= form.submit %>
+    </div>
   <% end %>
 <% end %>

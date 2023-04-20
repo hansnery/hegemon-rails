@@ -1,6 +1,6 @@
 <%= javascript_include_tag 'map_form' %>
 
-<%= form_with(model: map) do |form| %>
+<%= form_with(model: map, url: games_path) do |form| %>
   <% if map.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(map.errors.count, "error") %> prohibited this map from being saved:</h2>
