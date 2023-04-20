@@ -124,10 +124,7 @@ class GamesController < ApplicationController
       shuffled_provinces.each_with_index do |slice, player_index|
         player = players[player_index]
         slice.each do |province|
-          province.player_id = player.id
-          province.owner = player.name
-          province.color = player.color
-          province.save
+          province.update(player_id: player.id, owner: player.name, color: player.color)
         end
       end
 
