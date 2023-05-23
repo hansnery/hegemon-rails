@@ -1,12 +1,37 @@
 <p style="color: green"><%= notice %></p>
 
-<%= render @game %>
-
-<%= button_to "Play", game_map_path(@game, @game.map), method: :get %>
-
-<div>
-  <%= link_to "Edit this game", edit_game_path(@game) %> |
-  <%= link_to "Back to games", games_path %>
-
-  <%= button_to "Destroy this game", @game, method: :delete %>
+<div class="columns">
+  <div class="column is-one-quarter"></div>
+  <div class="column is-half">
+    <section class="container mt-6 pt-6">
+      <div class="columns is-multiline">
+        <div class="column">
+          <div class="columns">
+            <div class="column right has-text-centered box mx-6 px-6">
+              <h1 class="title"><%= @game.name %></h1>
+              <h2 class="subtitle">Players: <%= @game.map.num_players %>/<%= @game.map.max_players %></h2>
+              <div class="rows">
+                <div class="row my-4">
+                  <%= button_to "Play", game_map_path(@game, @game.map), method: :get, class: "button is-block is-success is-fullwidth is-medium" %>
+                </div>
+                <div class="row my-4">
+                  <div class="columns">
+                    <div class="column">
+                      <%= link_to "Edit", edit_game_path(@game), class: "button is-block is-warning is-fullwidth is-medium" %>
+                    </div>
+                    <div class="column">
+                      <%= button_to "Delete", @game, method: :delete, class: "button is-block is-danger is-fullwidth is-medium" %>
+                    </div>
+                  </div>
+                </div>
+                <div class="row my-4">
+                  <%= link_to "Back to games", games_path, class: "button is-block is-info is-fullwidth is-medium" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+  </div>
+  <div class="column is-one-quarter"></div>
 </div>
