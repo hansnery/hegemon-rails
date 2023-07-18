@@ -3,7 +3,7 @@ $(document).ready(function() {
   var map = L.map('map', {
     minZoom: 5,
     maxZoom: 7
-  }).setView([43, 16], 5);
+  }).setView([51.505, -0.09], 13);
 
   // Assign style to the map
   Esri_WorldImagery.addTo(map);
