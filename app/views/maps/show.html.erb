@@ -8,10 +8,6 @@
 <%= link_to "Back to game", game_path(@game) %>
 </div>
 
-<script type="application/json" id="provinces-json">
-  <%= raw @provinces_json %>
-</script>
-
 <%= javascript_include_tag 'https://code.jquery.com/jquery-3.6.0.min.js' %>
 <%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js' %>
 <%= stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css' %>

@@ -11,11 +11,10 @@ class MapsController < ApplicationController
   # GET /maps/1 or /maps/1.json
   def show
     @provinces = @map.provinces.all
-    @provinces_json = @map.provinces.all.to_json(include: :nearby_provinces)
 
     respond_to do |format|
       format.html
-      format.json { render json: @provinces_json }
+      format.json { render json: @provinces.to_json(include: :nearby_provinces) }
     end
   end
 

@@ -46,10 +46,40 @@ $(document).ready(function() {
   const gameId = window.location.pathname.split('/')[2];
   const mapId = window.location.pathname.split('/')[4];
 
-  // Variable to get the JSON element from the page and create the Ruby objects
-  let provinces_json = document.getElementById("provinces-json");
-  var provinces = JSON.parse(provinces_json.textContent);
-  provinces_json.remove(); // Removes provinces-json element from the view
+  // Get the URL to fetch data from the Rails controller
+  var mapUrl = '/games/' + gameId + '/maps/' + mapId + '/'
+
+  // Declare a variable to store the JSON data
+  var provinceData;
+
+  let provinces;
+
+  // Make the AJAX request to fetch the JSON data
+  $.ajax({
+    url: mapUrl,
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      // Save the JSON data in the provinceData variable
+      provinceData = data;
+
+      // This is the JSON data with all the provinces of the map
+      // console.log(provinceData);
+
+      // provinces = JSON.parse(provinceData);
+
+      provinces = provinceData;
+
+      // console.log("Parsed");
+
+      // console.log(provinces);
+    },
+    error: function(error) {
+      console.error('Error fetching JSON data:', error);
+    }
+  });
+
+  console.log(provinces);
 
   // Function to get the color from the Ruby object
   function getProvinceColor(name) {
