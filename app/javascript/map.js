@@ -1,47 +1,4 @@
 $(document).ready(function() {
-  // Map settings
-  var map = L.map('map', {
-    minZoom: 5,
-    maxZoom: 7
-  }).setView([51.505, -0.09], 13);
-
-  // Assign style to the map
-  Esri_WorldImagery.addTo(map);
-
-  // Map bounds
-  bounds = map.getBounds()
-  bounds._northEast.lat = 58.52108149544362
-  bounds._northEast.lng = 50.75781250000001
-  bounds._southWest.lat = 18.844673680771795
-  bounds._southWest.lng = -20.765625000000002
-
-  // Set map bounds
-  map.setMaxBounds(bounds);
-
-  function getFontSize(zoom) {
-    if (zoom == 4) {
-      return '8px';
-    } else if (zoom > 4 && zoom < 6) {
-      return '16px';
-    } else {
-      return '18px';
-    }
-  }
-
-  function setLabelPosition(label, center, name, offsets) {
-    var point = map.latLngToLayerPoint(center);
-    var offset = [0, 0];
-    if (name in offsets) {
-      var zoom = map.getZoom();
-      if (zoom in offsets[name]) {
-        offset = offsets[name][zoom];
-      }
-    }
-    var adjustedPoint = L.point(point.x + offset[0], point.y + offset[1]);
-    var adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
-    label.setLatLng(adjustedLatLng);
-  }
-
   // Set constants
   const gameId = window.location.pathname.split('/')[2];
   const mapId = window.location.pathname.split('/')[4];
@@ -57,6 +14,50 @@ $(document).ready(function() {
         success: function(data) {
           provinces = data; // Assign the received data to the provinces variable
           resolve(data);    // Resolve the Promise with the received data
+
+          // Map settings
+          var map = L.map('map', {
+            minZoom: 5,
+            maxZoom: 7
+          }).setView([51.505, -0.09], 13);
+
+          // Assign style to the map
+          Esri_WorldImagery.addTo(map);
+
+          // Map bounds
+          bounds = map.getBounds()
+          bounds._northEast.lat = 58.52108149544362
+          bounds._northEast.lng = 50.75781250000001
+          bounds._southWest.lat = 18.844673680771795
+          bounds._southWest.lng = -20.765625000000002
+
+          // Set map bounds
+          map.setMaxBounds(bounds);
+
+          function getFontSize(zoom) {
+            // if (zoom == 4) {
+            //   return '8px';
+            // } else if (zoom > 4 && zoom < 6) {
+            //   return '16px';
+            // } else {
+            //   return '18px';
+            // }
+            return '1.1rem';
+          }
+
+          function setLabelPosition(label, center, name, offsets) {
+            var point = map.latLngToLayerPoint(center);
+            var offset = [0, 0];
+            if (name in offsets) {
+              var zoom = map.getZoom();
+              if (zoom in offsets[name]) {
+                offset = offsets[name][zoom];
+              }
+            }
+            var adjustedPoint = L.point(point.x + offset[0], point.y + offset[1]);
+            var adjustedLatLng = map.layerPointToLatLng(adjustedPoint);
+            label.setLatLng(adjustedLatLng);
+          }
 
           // Function to get the color from the Ruby object
           function getProvinceColor(name) {

@@ -1,4 +1,5 @@
 // Set provinces labels offsets
+// The highest the number the highest the zoom level
 var offsets = {
   'Lusitania': {
     4: [-10, -10],
