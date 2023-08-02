@@ -49,7 +49,7 @@ $(document).ready(function() {
   // Get the URL to fetch data from the Rails controller
   var mapUrl = '/games/' + gameId + '/maps/' + mapId + '/'
 
-  function getProvincesJSON() {
+  function getDataAndRun() {
     return new Promise(function(resolve, reject) {
       $.ajax({
         url: mapUrl,
@@ -329,7 +329,5 @@ $(document).ready(function() {
     });
   }
 
-  getProvincesJSON();
+  getDataAndRun();
 });
-
-
