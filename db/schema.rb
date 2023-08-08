@@ -15,7 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_152649) do
     t.string "name"
     t.boolean "private"
     t.integer "player_turn", default: 0
-    t.integer "turns_played", default: 0
+    t.integer "turns_played", default: 1
     t.string "phase", default: "mustering"
     t.boolean "finished", default: false
     t.integer "winner"

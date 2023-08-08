@@ -11,10 +11,23 @@ class MapsController < ApplicationController
   # GET /maps/1 or /maps/1.json
   def show
     @provinces = @map.provinces.all
-
+    map_attributes = {
+      name: @map.name,
+      min_players: @map.min_players,
+      max_players: @map.max_players,
+      players: @map.players,
+      provinces: @provinces.as_json(include: :nearby_provinces)
+    }
+  
     respond_to do |format|
       format.html
-      format.json { render json: @provinces.to_json(include: :nearby_provinces) }
+      # format.json do
+      #   render json: {
+      #     map: map_attributes,
+      #     provinces: @provinces.to_json(include: :nearby_provinces)
+      #   }
+      # end
+      format.json { render json: map_attributes }
     end
   end
 

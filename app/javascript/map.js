@@ -41,15 +41,21 @@ $(document).ready(function() {
     // Use Promise.all to make both requests concurrently
     Promise.all([gameDataPromise, mapDataPromise])
     .then(function(values) {
-      var gameData = values[0]; // Data from the game request
-      var mapData = values[1];  // Data from the map request
-
       // Game data: name, phase, private, player_turn, turns_played, winner
-      // console.log(gameData);
+      var gameData = values[0];
+      var mapData = values[1];
+
+      // console.log(getPlayerTurn(mapData.players, gameData.player_turn));
+
+      getPlayerTurn(mapData.players, gameData.player_turn);
+
+      // 
+      showMessage("It's " + getPlayerTurn(mapData.players, gameData.player_turn).name + " turn!");
+      // setTimeout(hideMessage, 3000);
 
       // Now, you can call your existing functions to set up the map, such as
       // Assign the received data to the provinces variable
-      provinces = mapData;
+      provinces = mapData.provinces;
 
       // Map settings
       var map = L.map('map', {
