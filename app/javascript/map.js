@@ -43,12 +43,13 @@ $(document).ready(function() {
     .then(function(values) {
       // Game data: name, phase, private, player_turn, turns_played, winner
       var gameData = values[0];
+
+      // Map data: name, min_players, max_players, num_players
       var mapData = values[1];
 
       // Show whose turn it is
       showMessage("It's " + getPlayerTurn(mapData.players, gameData.player_turn).name + " turn!");
-
-      // Now, you can call your existing functions to set up the map, such as
+      
       // Assign the received data to the provinces variable
       provinces = mapData.provinces;
 

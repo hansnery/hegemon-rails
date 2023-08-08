@@ -8,9 +8,6 @@ function hideMessage() {
   document.getElementById("message-container").classList.add("hidden");
 }
 
-// Adding an event listener to the container that hides the message when clicked
-document.getElementById("message-container").addEventListener('click', hideMessage);
-
 function getPlayerTurn(players, turn) {
   // Use the remainder operator to ensure that the turn loops back to the beginning of the players array
   var index = turn % players.length;

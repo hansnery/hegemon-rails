@@ -132,6 +132,7 @@
   bottom: 0;
   /*background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
   z-index: 9999; /* Specify a stack order in case you're using a different order for other elements */
+  pointer-events: none; /* Ignore clicks on the message itself */
 }
 
 #message-box {
