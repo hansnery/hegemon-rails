@@ -11,6 +11,10 @@ class GamesController < ApplicationController
 
   # GET /games/1 or /games/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: @game.to_json }
+    end
   end
 
   # GET /games/new
