@@ -70,7 +70,7 @@ $(document).ready(function() {
               maxWidth: 130,
               offset: [10, -20]
             };
-            var popup = L.popup(popupOptions)
+            L.popup(popupOptions)
               .setLatLng(e.latlng)
               .setContent(popupContent)
               .openOn(map);

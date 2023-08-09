@@ -73,7 +73,10 @@ class MapsController < ApplicationController
     @province_2 = Province.find(params[:province_2_id])
     @num_armies = (params[:num_armies]).to_i
 
-    if @province_1.owner == @province_2.owner && @province_1 != @province_2
+    # Rails.logger.debug @game.inspect
+
+    # Check if province you are marching to belongs to player, if it does just march them there
+    if @province_1.owner == @province_2.owner && @province_1 != @province_2 && @game.phase == ''
       @province_2.armies += @num_armies
       @province_1.armies -= @num_armies
     end
