@@ -8,6 +8,11 @@ $(document).ready(function() {
     ARMY_ICON_URL: 'https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png'
   };
 
+  // Set global variables
+  var firstClickedProvince;
+  var secondClickedProvince;
+  var armyMarkerClicked = false;
+
   // Function to get game data
   function getGameData() {
     return new Promise(function(resolve, reject) {
@@ -44,14 +49,7 @@ $(document).ready(function() {
       firstClickedProvince = getProvince(feature.properties.name);
 
       // Highlight the neighbouring provinces
-      provincesLayer.setStyle(function(feature) {
-        if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
-          return {
-            color: getProvinceColor(feature.properties.name),
-            fillOpacity: 1.0
-          };
-        }
-      });
+      highlightProvincesColors(provincesLayer, feature, nearbyProvinces);
     } else if (armyMarkerClicked) { // Second click
       var armiesSlider = document.getElementById('num-armies-slider');
       var selectedArmies = armiesSlider ? armiesSlider.value : 1;
@@ -180,11 +178,6 @@ $(document).ready(function() {
 
       // Assign the received data to the provinces variable
       provinces = mapData.provinces;
-
-      // Set global variables
-      var firstClickedProvince;
-      var secondClickedProvince;
-      var armyMarkerClicked = false;
 
       drawMap();
     })

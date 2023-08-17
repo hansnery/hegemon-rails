@@ -126,6 +126,7 @@ function bindProvinceOwnerTooltip(layer, feature) {
 }
 
 function restoreProvincesColors(layer, feature) {
+  feature = feature;
   layer.setStyle(function(feature) {
     return {
       fillColor: getProvinceColor(feature.properties.name),
@@ -133,6 +134,21 @@ function restoreProvincesColors(layer, feature) {
       weight: 1,
       fillOpacity: 0.5
     };
+  });
+}
+
+function highlightProvincesColors(layer, feature, nearbyProvinces) {
+  feature = feature;
+  nearbyProvinces = nearbyProvinces;
+  layer.setStyle(function(feature) {
+    if (nearbyProvinces.indexOf(feature.properties.name) !== -1) {
+      return {
+        color: getProvinceColor(feature.properties.name),
+        color: 'black',
+        weight: 1,
+        fillOpacity: 1.0
+      };
+    }
   });
 }
 
