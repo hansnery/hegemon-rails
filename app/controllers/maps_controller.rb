@@ -18,7 +18,7 @@ class MapsController < ApplicationController
       players: @map.players,
       provinces: @provinces.as_json(include: :nearby_provinces)
     }
-  
+
     respond_to do |format|
       format.html
       # format.json do
@@ -76,7 +76,7 @@ class MapsController < ApplicationController
     # Rails.logger.debug @game.inspect
 
     # Check if province you are marching to belongs to player, if it does just march them there
-    if @province_1.owner == @province_2.owner && @province_1 != @province_2 && @game.phase == ''
+    if @province_1.owner == @province_2.owner && @province_1 != @province_2 #&& @game.phase == ''
       @province_2.armies += @num_armies
       @province_1.armies -= @num_armies
     end

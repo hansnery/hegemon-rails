@@ -1,19 +1,18 @@
+
 $(document).ready(function() {
-  // Set constants
-  const gameId = window.location.pathname.split('/')[2];
-  const mapId = window.location.pathname.split('/')[4];
-
-  // Get the URL to fetch game data from the Rails controller
-  var gameUrl = '/games/' + gameId
-
-  // Get the URL to fetch map data from the Rails controller
-  var mapUrl = '/games/' + gameId + '/maps/' + mapId + '/'
+  // Configuration and Constants
+  const CONFIG = {
+    GAME_URL: '/games/' + window.location.pathname.split('/')[2],
+    MAP_URL: '/games/' + window.location.pathname.split('/')[2] + '/maps/' + window.location.pathname.split('/')[4] + '/',
+    PROVINCES_URL: 'https://cdn.jsdelivr.net/gh/klokantech/roman-empire@master/data/provinces.geojson',
+    ARMY_ICON_URL: 'https://img.icons8.com/external-others-pike-picture/256/external-Legionary-rome-others-pike-picture.png'
+  };
 
   function getDataAndRun() {
     // Create a Promise to handle the game data request
     var gameDataPromise = new Promise(function(resolve, reject) {
       $.ajax({
-        url: gameUrl,
+        url: CONFIG.GAME_URL,
         dataType: 'json',
         success: function(data) {
           resolve(data);
@@ -27,7 +26,7 @@ $(document).ready(function() {
     // Create a Promise to handle the map data request
     var mapDataPromise = new Promise(function(resolve, reject) {
       $.ajax({
-        url: mapUrl,
+        url: CONFIG.MAP_URL,
         dataType: 'json',
         success: function(data) {
           resolve(data);    // Resolve the Promise with the received data
@@ -49,7 +48,7 @@ $(document).ready(function() {
 
       // Show whose turn it is
       showMessage("It's " + getPlayerTurn(mapData.players, gameData.player_turn).name + " turn!");
-      
+
       // Assign the received data to the provinces variable
       provinces = mapData.provinces;
 
@@ -98,7 +97,7 @@ $(document).ready(function() {
           armyMarkerClicked = false;
 
           // Make POST request to Rails backend
-          fetch('/games/' + gameId + '/maps/' + mapId + '/' + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
+          fetch(CONFIG.MAP_URL + firstClickedProvince.id + '/marches_to/' + secondClickedProvince.id + '/' + selectedArmies)
             .then(response => {
               if (!response.ok) {
                 throw new Error('Network response was not ok');
